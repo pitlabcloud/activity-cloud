@@ -7,7 +7,7 @@ using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.StorageClient;
 using NooSphere.Core.FileManagement;
 using NooSphere.Core.ActivityModel;
-using Microsoft.WindowsAzure.ServiceRuntime;
+using System.Configuration;
 
 namespace NooSphere.Cloud.ActivityManager
 {
@@ -31,7 +31,7 @@ namespace NooSphere.Cloud.ActivityManager
         /// NooSphere.Cloud -> Roles -> NooSphere.Cloud.ActivityManager -> Settings
         /// when deploying
         /// </remark> 
-        private const string connectionStringName = "DataConnectionString";
+        private const string connectionStringName = "ConnectionString";
         private const string blobContainerName = "files";
 
         public FileDetails[] GetBlobs()
@@ -275,7 +275,7 @@ namespace NooSphere.Cloud.ActivityManager
             get
             {
                 //return CloudStorageAccount.DevelopmentStorageAccount;
-                return CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue(connectionStringName));
+                return CloudStorageAccount.Parse(ConfigurationManager.AppSettings[connectionStringName]);
             }
         }
     }

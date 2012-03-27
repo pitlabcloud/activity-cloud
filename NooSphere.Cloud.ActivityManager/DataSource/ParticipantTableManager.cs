@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Lokad.Cloud.Storage;
 using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.ServiceRuntime;
 using NooSphere.Cloud.ActivityManager.DataSource;
 using NooSphere.Core.ActivityModel;
+using System.Configuration;
 
 namespace NooSphere.Cloud.ActivityManager
 {
@@ -19,7 +19,7 @@ namespace NooSphere.Cloud.ActivityManager
         /// </summary>
         private const string partitionKey = "abc";
 
-        private const string connectionStringName = "Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString";
+        private const string connectionStringName = "ConnectionString";
         /// <summary>
         /// Linq query to return all stored participants
         /// </summary>
@@ -83,7 +83,7 @@ namespace NooSphere.Cloud.ActivityManager
         {
             get
             {
-                return CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue(connectionStringName));
+                return CloudStorageAccount.Parse(ConfigurationManager.AppSettings[connectionStringName]);
             }
         }
     }
