@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "NooSphere.Cloud", "NooSphere.Cloud\NooSphere.Cloud.ccproj", "{97CA78B3-2DA7-4F6E-91DE-74E11D9AE715}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NooSphere.Cloud.ActivityManager", "NooSphere.Cloud.ActivityManager\NooSphere.Cloud.ActivityManager.csproj", "{DD3D826D-0902-494F-A972-83514C55BB34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NooSphere.Cloud.Authentication", "NooSphere.Cloud.Authentication\NooSphere.Cloud.Authentication.csproj", "{ED15D2C5-B68A-4F89-B527-5EE5F2D7AED5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NooSphere.Core", "NooSphere.Core\NooSphere.Core.csproj", "{03C072A4-5960-4A5D-B0CC-98EBD854E970}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NooSphere.Helpers", "NooSphere.Helpers\NooSphere.Helpers.csproj", "{6424191D-5C04-43E6-B610-FD4B41E8A340}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{97CA78B3-2DA7-4F6E-91DE-74E11D9AE715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97CA78B3-2DA7-4F6E-91DE-74E11D9AE715}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97CA78B3-2DA7-4F6E-91DE-74E11D9AE715}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97CA78B3-2DA7-4F6E-91DE-74E11D9AE715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD3D826D-0902-494F-A972-83514C55BB34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD3D826D-0902-494F-A972-83514C55BB34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD3D826D-0902-494F-A972-83514C55BB34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD3D826D-0902-494F-A972-83514C55BB34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED15D2C5-B68A-4F89-B527-5EE5F2D7AED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED15D2C5-B68A-4F89-B527-5EE5F2D7AED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED15D2C5-B68A-4F89-B527-5EE5F2D7AED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED15D2C5-B68A-4F89-B527-5EE5F2D7AED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03C072A4-5960-4A5D-B0CC-98EBD854E970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03C072A4-5960-4A5D-B0CC-98EBD854E970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03C072A4-5960-4A5D-B0CC-98EBD854E970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03C072A4-5960-4A5D-B0CC-98EBD854E970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6424191D-5C04-43E6-B610-FD4B41E8A340}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6424191D-5C04-43E6-B610-FD4B41E8A340}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6424191D-5C04-43E6-B610-FD4B41E8A340}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6424191D-5C04-43E6-B610-FD4B41E8A340}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
