@@ -8,7 +8,6 @@ using System.Web.Http.Filters;
 using System.Web.Mvc;
 using System.Net.Http.Headers;
 using System.Web;
-using Microsoft.WindowsAzure.ServiceRuntime;
 using System.IO;
 using NooSphere.Core.ActivityModel;
 using System.Security.Principal;
