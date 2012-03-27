@@ -29,3 +29,4 @@ _ReSharper*/
 *.Debug.config
 packages/
 NooSphere.Cloud/
+!nuget.exe
