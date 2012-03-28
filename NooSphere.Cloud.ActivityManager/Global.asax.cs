@@ -32,13 +32,13 @@ namespace NooSphere.Cloud.ActivityManager
              */
             routes.MapHttpRoute(
                 name: "OldRest",
-                routeTemplate: "activitymanager/rest/activities/{id}",
+                routeTemplate: "activitymanager/activities/{id}",
                 defaults: new { controller = "OldRest", id = RouteParameter.Optional }
             );
 
             routes.MapHttpRoute(
                 name: "OldRestHello",
-                routeTemplate: "activitymanager/rest/{id}",
+                routeTemplate: "activitymanager/{id}",
                 defaults: new { controller = "OldRestHello", id = RouteParameter.Optional }
             );
 

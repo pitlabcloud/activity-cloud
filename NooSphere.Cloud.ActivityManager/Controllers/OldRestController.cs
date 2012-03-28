@@ -13,19 +13,19 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         private static CloudFileManager cfm = new CloudFileManager();
         private static ActivityTableManager dtm = new ActivityTableManager();
 
-        // GET /activitymanager.svc/rest/activities
+        // GET /activitymanager/activities
         public IEnumerable<Activity> Get()
         {
             return dtm.GetActivities();
         }
 
-        // GET /activitymanager.svc/rest/activities/5
+        // GET /activitymanager/activities/5
         public Activity Get(string id)
         {
             return dtm.GetActivity(id);
         }
 
-        // POST /activitymanager.svc/rest/activities
+        // POST /activitymanager/activities
         public FileBatch Post(Activity act)
         {
             if (act != null)
@@ -38,7 +38,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return null;
         }
 
-        // PUT /activitymanager.svc/rest/activities/5
+        // PUT /activitymanager/activities/5
         public FileBatch Put(string id, Activity act)
         {
             var oldActivity = dtm.GetActivity(id);
@@ -52,7 +52,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return changeBatch;
         }
 
-        // DELETE /activitymanager.svc/rest/activities/5
+        // DELETE /activitymanager/activities/5
         public FileBatch Delete(string id)
         {
             // Remove activity in DataTableManager
