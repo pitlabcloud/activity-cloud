@@ -6,17 +6,18 @@ using System.Web.Http;
 using NooSphere.Cloud.Authentication;
 using NooSphere.Core.ActivityModel;
 using System.Web;
+using NooSphere.Cloud.ActivityManager.Storage;
 
 namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class UsersController : ApiController
     {
-        private static ParticipantTableManager ptm = new ParticipantTableManager();
+        private static ParticipantStorage participantStorage = new ParticipantStorage();
 
         // GET /api/users
         public IEnumerable<Participant> Get()
         {
-            return ptm.GetParticipants();
+            return participantStorage.GetParticipants();
         }
 
         // GET /api/users/{email}
@@ -33,7 +34,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             if (p != null)
             {
                 // Add participant to Participant Table Manager
-                ptm.AddParticipant(p);
+                participantStorage.AddParticipant(p);
             }
         }
     }

@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWSSDK">
+      <HintPath>..\packages\AWSSDK.1.4.6.3\lib\AWSSDK.dll</HintPath>
+    </Reference>
     <Reference Include="Lokad.Cloud.Storage, Version=2.3.4.16, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Lokad.Cloud.Storage.2.3.4\lib\Lokad.Cloud.Storage.dll</HintPath>
@@ -132,15 +135,13 @@
     <Compile Include="Controllers\FilesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="DataSource\ActivityTableManager.cs" />
-    <Compile Include="DataSource\ActivityWrapper.cs" />
-    <Compile Include="DataSource\CloudFileManager.cs" />
-    <Compile Include="DataSource\ParticipantTableManager.cs" />
-    <Compile Include="DataSource\ParticipantWrapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Storage\ActivityStorage.cs" />
+    <Compile Include="Storage\ParticipantStorage.cs" />
+    <Compile Include="Storage\FileStorage.cs" />
     <None Include="Sensitive.config">
       <SubType>Designer</SubType>
     </None>
@@ -233,6 +234,10 @@
     <ProjectReference Include="..\NooSphere.Core\NooSphere.Core.csproj">
       <Project>{03C072A4-5960-4A5D-B0CC-98EBD854E970}</Project>
       <Name>NooSphere.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NooSphere.Helpers\NooSphere.Helpers.csproj">
+      <Project>{6424191D-5C04-43E6-B610-FD4B41E8A340}</Project>
+      <Name>NooSphere.Helpers</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

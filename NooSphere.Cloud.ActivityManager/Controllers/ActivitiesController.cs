@@ -7,27 +7,30 @@ using NooSphere.Core.FileManagement;
 using System.Web;
 using Newtonsoft.Json;
 using System.IO;
+using NooSphere.Cloud.ActivityManager.Storage;
 
 namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class ActivitiesController : ApiController
     {
-        private static CloudFileManager cfm = new CloudFileManager();
-        private static ActivityTableManager dtm = new ActivityTableManager();
+        private static ActivityStorage activityStorage = new ActivityStorage();
+        private static FileStorage fileStorage = new FileStorage();
 
         // GET /api/activities
         [RequireParticipant]
         public IEnumerable<Activity> Get()
         {
-            return dtm.GetActivities().Where(a => IsAuthorizedForActivity(a));
+            return activityStorage.GetActivities().Where(a => IsAuthorizedForActivity(a));
+            //return dtm.GetActivities().Where(a => IsAuthorizedForActivity(a));
         }
 
         // GET /api/activities/5
         [RequireParticipant]
         public Activity Get(string id)
         {
-            string email = HttpContext.Current.User.Identity.Name; 
-            Activity a = dtm.GetActivity(id);
+            string email = HttpContext.Current.User.Identity.Name;
+            Activity a = activityStorage.GetActivity(id);
+            //Activity a = dtm.GetActivity(id);
             if (IsAuthorizedForActivity(a))
                 return a;
             else
@@ -43,9 +46,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                 if (IsAuthorizedForActivity(act))
                 {
                     // Add activity to DataTableManager
-                    dtm.AddActivity(act);
+                    activityStorage.AddActivity(act);
+                    //dtm.AddActivity(act);
                     // TODO: Sent ChangeBatch to all subscribers
-                    return cfm.GetChangeBatch(act);
+                    return fileStorage.GetChangeBatch(act);
                 }
                 return null;
             }
@@ -59,14 +63,17 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         {
             if (IsAuthorizedForActivity(act))
             {
-                var oldActivity = dtm.GetActivity(id);
+                var oldActivity = activityStorage.GetActivity(id);
+                //var oldActivity = dtm.GetActivity(id);
                 // Add updated activity to the DataTableManager
-                dtm.AddActivity(act);
+                activityStorage.AddActivity(act);
+                //dtm.AddActivity(act);
                 // Get changeBatch between old and new activity
-                FileBatch changeBatch = cfm.GetChangeBatch(oldActivity, act);
+                FileBatch changeBatch = fileStorage.GetChangeBatch(oldActivity, act);
                 // Delete all unreferenced files, taht might be left after activity update
                 // Add those deleted files to the changeBatch
-                changeBatch.Files.AddRange(cfm.DeleteUnreferencedFiles(dtm.GetActivities()));
+                //changeBatch.Files.AddRange(cfm.DeleteUnreferencedFiles(dtm.GetActivities()));
+                changeBatch.Files.AddRange(fileStorage.DeleteUnreferencedFiles(activityStorage.GetActivities()));
                 return changeBatch;
             } return null;
         }
@@ -75,14 +82,17 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         [RequireParticipant]
         public FileBatch Delete(string id)
         {
-            if (IsAuthorizedForActivity(dtm.GetActivity(id)))
+            if(IsAuthorizedForActivity(activityStorage.GetActivity(id)))
+            //if (IsAuthorizedForActivity(dtm.GetActivity(id)))
             {
                 // Remove activity in DataTableManager
-                dtm.RemoveActivity(id);
+                activityStorage.RemoveActivity(id);
+                //dtm.RemoveActivity(id);
                 // Delete all unreferenced files, that might be left after activity removal
                 // Add those deleted files to the changeBatch
                 FileBatch changeBatch = new FileBatch();
-                changeBatch.Files = cfm.DeleteUnreferencedFiles(dtm.GetActivities());
+                changeBatch.Files = fileStorage.DeleteUnreferencedFiles(activityStorage.GetActivities());
+                //changeBatch.Files = cfm.DeleteUnreferencedFiles(dtm.GetActivities());
                 // TODO: Sent ChangeBatch to all subscribers
                 return changeBatch;
             } return null;

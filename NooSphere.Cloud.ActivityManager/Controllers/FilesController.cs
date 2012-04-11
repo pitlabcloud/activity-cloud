@@ -4,21 +4,27 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using NooSphere.Core.FileManagement;
+using NooSphere.Cloud.ActivityManager.Storage;
+using NooSphere.Cloud.Authentication;
 
 namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class FilesController : ApiController
     {
-        private static CloudFileManager cfm = new CloudFileManager();
+        private static FileStorage fileStorage = new FileStorage();
 
-        public void Post(FileBatch batch)
+        [HttpPost]
+        [RequireParticipant]
+        public void Upload(FileBatch batch)
         {
-            cfm.UploadToBlob(batch);
+            fileStorage.UploadFiles(batch);
         }
 
-        public FileBatch Get(FileBatch batch)
+        [HttpPost]
+        [RequireParticipant]
+        public FileBatch Download(FileBatch batch)
         {
-            return cfm.DownloadFromBlob(batch);
+            return fileStorage.DownloadFiles(batch);
         }
     }
 }
