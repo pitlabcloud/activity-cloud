@@ -15,14 +15,23 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
         [HttpPost]
         [RequireParticipant]
-        public void Upload(FileBatch batch)
+        public FileBatch ForwardCall(FileBatch batch)
         {
-            fileStorage.UploadFiles(batch);
+            if (batch.ByteStream.Length > 0)
+                return Upload(batch);
+            else
+                return Download(batch);
         }
 
-        [HttpPost]
-        [RequireParticipant]
-        public FileBatch Download(FileBatch batch)
+        [NonAction]
+        private FileBatch Upload(FileBatch batch)
+        {
+            fileStorage.UploadFiles(batch);
+            return null;
+        }
+
+        [NonAction]
+        private FileBatch Download(FileBatch batch)
         {
             return fileStorage.DownloadFiles(batch);
         }

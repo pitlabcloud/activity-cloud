@@ -32,12 +32,17 @@ namespace NooSphere.Cloud.ActivityManager.Storage
         public FileBatch DownloadFiles(FileBatch batch)
         {
             int start = 0;
+            batch.ByteStream = new byte[batch.TotalSize];
             foreach (FileDetails details in batch.Files)
             {
                 using (var client = SetupClient())
                 {
                     GetObjectResponse response = client.GetObject(new GetObjectRequest().WithBucketName(bucketName).WithKey(details.FileName));
-                    response.ResponseStream.Write(batch.ByteStream, start, (int)details.Size);
+                    using (BinaryReader reader = new BinaryReader(response.ResponseStream))
+                    {
+                        byte[] b = reader.ReadBytes((int)details.Size);
+                        Buffer.BlockCopy(b, 0, batch.ByteStream, start, (int)details.Size);
+                    }
                 }
                 start += (int)details.Size;
             }

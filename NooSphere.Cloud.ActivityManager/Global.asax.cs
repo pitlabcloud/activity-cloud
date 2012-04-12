@@ -29,8 +29,8 @@ namespace NooSphere.Cloud.ActivityManager
 
             routes.MapHttpRoute(
                 name: "FilesApi",
-                routeTemplate: "api/files/{action}",
-                defaults: new { controller = "files", action = "download" }
+                routeTemplate: "api/files/{id}",
+                defaults: new { controller = "Files", id = RouteParameter.Optional }
             );
 
             /**
