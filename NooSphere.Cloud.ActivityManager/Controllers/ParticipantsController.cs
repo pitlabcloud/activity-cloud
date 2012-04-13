@@ -43,5 +43,12 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             if (p != null)
                 participantStorage.AddParticipant(p);
         }
+
+        // DELETE /api/participants{id}
+        [RequireParticipant]
+        public void Delete(string id)
+        {
+            participantStorage.RemoveParticipant(id);
+        }
     }
 }

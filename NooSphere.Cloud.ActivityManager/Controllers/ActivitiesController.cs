@@ -24,7 +24,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             //return dtm.GetActivities().Where(a => IsAuthorizedForActivity(a));
         }
 
-        // GET /api/activities/5
+        // GET /api/activities/{id}
         [RequireParticipant]
         public Activity Get(string id)
         {
@@ -57,7 +57,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                 return null;
         }
 
-        // PUT /api/activities/5
+        // PUT /api/activities/{id}
         [RequireParticipant]
         public FileBatch Put(string id, Activity act)
         {
@@ -78,7 +78,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             } return null;
         }
 
-        // DELETE /api/activities/5
+        // DELETE /api/activities/{id}
         [RequireParticipant]
         public FileBatch Delete(string id)
         {
