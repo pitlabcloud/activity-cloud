@@ -10,32 +10,38 @@ using NooSphere.Cloud.ActivityManager.Storage;
 
 namespace NooSphere.Cloud.ActivityManager.Controllers
 {
-    public class UsersController : ApiController
+    public class ParticipantsController : ApiController
     {
         private static ParticipantStorage participantStorage = new ParticipantStorage();
 
-        // GET /api/users
+        // GET /api/participants
+        [RequireParticipant]
         public IEnumerable<Participant> Get()
         {
             return participantStorage.GetParticipants();
         }
 
-        // GET /api/users/{email}
-        public Participant Get(string email)
+        // GET /api/participants/{id}
+        [RequireParticipant]
+        public Participant Get(string id)
         {
-            return new Participant();
-            //return ptm.GetParticipant(email);
+            return participantStorage.GetParticipant(id);
         }
 
-        // POST /api/users
+        // POST /api/participants
         [RequireParticipant]
         public void Post(Participant p)
         {
             if (p != null)
-            {
-                // Add participant to Participant Table Manager
                 participantStorage.AddParticipant(p);
-            }
+        }
+
+        // PUT /api/participants
+        [RequireParticipant]
+        public void Put(Participant p)
+        {
+            if (p != null)
+                participantStorage.AddParticipant(p);
         }
     }
 }
