@@ -21,7 +21,6 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         public IEnumerable<Activity> Get()
         {
             return activityStorage.GetActivities().Where(a => IsAuthorizedForActivity(a));
-            //return dtm.GetActivities().Where(a => IsAuthorizedForActivity(a));
         }
 
         // GET /api/activities/{id}
@@ -30,7 +29,6 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         {
             string email = HttpContext.Current.User.Identity.Name;
             Activity a = activityStorage.GetActivity(id);
-            //Activity a = dtm.GetActivity(id);
             if (IsAuthorizedForActivity(a))
                 return a;
             else
@@ -47,7 +45,6 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                 {
                     // Add activity to DataTableManager
                     activityStorage.AddActivity(act);
-                    //dtm.AddActivity(act);
                     // TODO: Sent ChangeBatch to all subscribers
                     return fileStorage.GetChangeBatch(act);
                 }
@@ -61,41 +58,43 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         [RequireParticipant]
         public FileBatch Put(string id, Activity act)
         {
-            if (IsAuthorizedForActivity(act))
+            if (act != null)
             {
-                var oldActivity = activityStorage.GetActivity(id);
-                //var oldActivity = dtm.GetActivity(id);
-                // Add updated activity to the DataTableManager
-                activityStorage.AddActivity(act);
-                //dtm.AddActivity(act);
-                // Get changeBatch between old and new activity
-                FileBatch changeBatch = fileStorage.GetChangeBatch(oldActivity, act);
-                // Delete all unreferenced files, taht might be left after activity update
-                // Add those deleted files to the changeBatch
-                //changeBatch.Files.AddRange(cfm.DeleteUnreferencedFiles(dtm.GetActivities()));
-                changeBatch.Files.AddRange(fileStorage.DeleteUnreferencedFiles(activityStorage.GetActivities()));
-                return changeBatch;
-            } return null;
+                if (IsAuthorizedForActivity(act))
+                {
+                    var oldActivity = activityStorage.GetActivity(id);
+                    // Add updated activity to the activity storage
+                    activityStorage.AddActivity(act);
+                    // Get changeBatch between old and new activity
+                    FileBatch changeBatch = fileStorage.GetChangeBatch(oldActivity, act);
+                    // Delete all unreferenced files, taht might be left after activity update
+                    // Add those deleted files to the changeBatch
+                    changeBatch.Files.AddRange(fileStorage.DeleteUnreferencedFiles(activityStorage.GetActivities()));
+                    return changeBatch;
+                }
+            }
+            return null;
         }
 
         // DELETE /api/activities/{id}
         [RequireParticipant]
         public FileBatch Delete(string id)
         {
-            if(IsAuthorizedForActivity(activityStorage.GetActivity(id)))
-            //if (IsAuthorizedForActivity(dtm.GetActivity(id)))
+            if (id != null)
             {
-                // Remove activity in DataTableManager
-                activityStorage.RemoveActivity(id);
-                //dtm.RemoveActivity(id);
-                // Delete all unreferenced files, that might be left after activity removal
-                // Add those deleted files to the changeBatch
-                FileBatch changeBatch = new FileBatch();
-                changeBatch.Files = fileStorage.DeleteUnreferencedFiles(activityStorage.GetActivities());
-                //changeBatch.Files = cfm.DeleteUnreferencedFiles(dtm.GetActivities());
-                // TODO: Sent ChangeBatch to all subscribers
-                return changeBatch;
-            } return null;
+                if (IsAuthorizedForActivity(activityStorage.GetActivity(id)))
+                {
+                    // Remove activity in activity storage
+                    activityStorage.RemoveActivity(id);
+                    // Delete all unreferenced files, that might be left after activity removal
+                    // Add those deleted files to the changeBatch
+                    FileBatch changeBatch = new FileBatch();
+                    changeBatch.Files = fileStorage.DeleteUnreferencedFiles(activityStorage.GetActivities());
+                    // TODO: Sent ChangeBatch to all subscribers
+                    return changeBatch;
+                }
+            }
+            return null;
         }
 
         private bool IsAuthorizedForActivity(Activity a)
