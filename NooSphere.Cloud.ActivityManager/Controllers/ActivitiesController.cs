@@ -37,6 +37,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
         // POST /api/activities
         [RequireParticipant]
+        [HttpPost]
         public FileBatch Post(Activity act)
         {
             if (act != null)
@@ -56,6 +57,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
         // PUT /api/activities/{id}
         [RequireParticipant]
+        [HttpPut]
         public FileBatch Put(string id, Activity act)
         {
             if (act != null)
@@ -78,6 +80,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
         // DELETE /api/activities/{id}
         [RequireParticipant]
+        [HttpDelete]
         public FileBatch Delete(string id)
         {
             if (id != null)
