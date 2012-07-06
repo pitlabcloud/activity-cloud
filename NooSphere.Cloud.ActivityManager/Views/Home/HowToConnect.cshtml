@@ -1,0 +1,88 @@
+﻿    <header>
+        <div class="content-wrapper">       
+            <div class="float-left">
+                <p class="site-title"><a href="/">TEST Activity Cloud</a></p>
+            </div>
+        </div>
+    </header>
+  <div id="body">
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>Activity Cloud API Help Page</h1>
+            </hgroup>
+            <hgroup>
+                Activity Cloud is a cloud-based activity manager. Build in ASP .NET MVC 4, activities are stored in Amazon's S3 cloud. Through events send with SignalR, the client is automatically
+                notified whenever changes are applied to the activities.
+            </hgroup>
+        </div>
+    </section>
+    <section class="content-wrapper main-content clear-fix">
+            <section class="feature">
+                <img src="/Images/aspNethome.png" />
+                <h3>Something</h3>
+                <p>Some text for this featre</p>
+            </section>
+            <section class="feature">
+                <img src="/Images/findHosting.png" />
+                <h3>Connect to Activity Cloud</h3>
+                <p>Some text for this featre</p>
+            </section>
+            <section class="feature">
+                <img src="/Images/NuGetGallery.png" />
+                <h3>Something</h3>
+                <p>Some text for this featre</p>
+            </section>
+
+            <h3>How to connect to the activity cloud:</h3>
+            <hgroup>
+            To connect to the activity cloud, you need to install SignalR, which is broken up into a few package on NuGet:
+            <ul>
+                <li>SignalR - A meta package that brings in SignalR.Server and SignalR.Js</li>
+                <li>SignalR.Server - Server side components needed to build SignalR endpoints</li>
+                <li>SignalR.Js - Javascript client for SignalR</li>
+                <li>SignalR.Client - .NET client for SignalR (you should install this)</li>
+                <li>SignalR.Ninject - Ninject dependeny resolver for SignalR</li>
+            </ul>
+            Then the code is dead simple. First you connect to the activity cloud, and then you start the connection. If connection is obtained you set up a handler for receiving data.
+            <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
+                <code style="font-weight: bold;">
+                    Connection connection = new Connection("@(Request.Url.AbsoluteUri)connect");
+                    <br /><br />
+                    connection.Start().ContinueWith(task => {<br />
+                    &nbsp;&nbsp;if (task.IsFaulted) {<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;Failed();<br />
+                    &nbsp;&nbsp;} else {<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;Success(connection.ConnectionId);<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;connection.Received += data => {<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleReceivedData(data);<br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;};<br />
+                    &nbsp;&nbsp;}<br />
+                    });
+                </code>
+            </p>
+            It's as simple as that. We are now connected to the activity cloud through a persistant connection, thus receiving events from the activity cloud.
+            <br /><br />
+            Next up we need to create a user.
+            
+            
+            </hgroup>
+            <h3>Authentication</h3>
+            <hgroup>
+            User authentication is required for (almost) every call using a http header with the following schema:
+            
+            <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
+                <code style="font-weight: bold;">
+                    Content-Type: application/json; charset=utf-8<br />
+                    Authorization: ACUser = "%7b%22Identity%22%3a%7b%22Name%22%3a%22default%22%2c%22ID%22%3a%22c7decf91-d3c1-4c2a-919b-e0179806e6ba%22%2c%22
+                    Description%22%3a%22default+activity%22%2c%22
+                    Uri%22%3anull%7d%2c%22Image%22%3anull%2c%22
+                    AccessTokenExpirationDate%22%3anull%2c%22
+                    AccessToken%22%3anull%2c%22
+                    Email%22%3a%22pitlabcloud%40gmail.com%22%7d"
+                </code>
+            </p>
+
+            </hgroup>
+      </section>
+  </div>

@@ -34,8 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\packages\mongocsharpdriver.1.4.2\lib\net35\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\packages\mongocsharpdriver.1.4.2\lib\net35\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,28 +64,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActivityModel\BaseObject.cs" />
+    <Compile Include="ActivityModel\Device.cs" />
+    <Compile Include="ActivityModel\Resource.cs" />
     <Compile Include="Devices\Device.cs" />
     <Compile Include="ActivityModel\Action.cs" />
     <Compile Include="ActivityModel\Activity.cs" />
-    <Compile Include="ActivityModel\Actor.cs" />
-    <Compile Include="ActivityModel\Collaborator.cs" />
     <Compile Include="Logger\Logger.cs" />
-    <Compile Include="Primitives\Identity.cs" />
-    <Compile Include="ActivityModel\Metadata.cs" />
-    <Compile Include="ActivityModel\Participant.cs" />
-    <Compile Include="ActivityModel\Service.cs" />
+    <Compile Include="ActivityModel\User.cs" />
     <Compile Include="ContextModel\Context.cs" />
-    <Compile Include="ActivityModel\History.cs" />
-    <Compile Include="ActivityModel\Resource.cs" />
     <Compile Include="ActivityModel\Role.cs" />
-    <Compile Include="ActivityModel\Workflow.cs" />
     <Compile Include="ContextModel\ComponentModel\IRule.cs" />
     <Compile Include="ContextModel\ComponentModel\IView.cs" />
     <Compile Include="FileManagement\FileDetails.cs" />
     <Compile Include="FileManagement\FileBatch.cs" />
-    <Compile Include="Primitives\IEntity.cs" />
     <Compile Include="ContextModel\ComponentModel\ILifecycle.cs" />
-    <Compile Include="Parser\Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ContextModel\ComponentModel\ITool.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -92,12 +92,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NooSphere.Helpers\NooSphere.Helpers.csproj">
-      <Project>{6424191D-5C04-43E6-B610-FD4B41E8A340}</Project>
-      <Name>NooSphere.Helpers</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

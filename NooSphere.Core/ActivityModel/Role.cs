@@ -5,7 +5,9 @@ using System.Text;
 
 namespace NooSphere.Core.ActivityModel
 {
-    class Role
+    public enum Role
     {
+        Owner,
+        Participant
     }
 }
