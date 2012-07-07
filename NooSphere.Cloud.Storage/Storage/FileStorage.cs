@@ -25,11 +25,11 @@ namespace NooSphere.Cloud.Data.Storage
             AccessSecret = accessSecret;
         }
 
-        public byte[] Download(Guid id)
+        public byte[] Download(string id)
         {
             using (var client = SetupClient())
             {
-                GetObjectResponse response = client.GetObject(new GetObjectRequest().WithBucketName(bucketName).WithKey(id.ToString()));
+                GetObjectResponse response = client.GetObject(new GetObjectRequest().WithBucketName(bucketName).WithKey(id));
                 using (MemoryStream ms = new MemoryStream())
                 {
                     response.ResponseStream.CopyTo(ms);
@@ -38,7 +38,7 @@ namespace NooSphere.Cloud.Data.Storage
             }
         }
 
-        public bool Upload(Guid id, string relativePath, DateTime creationTime, DateTime lastWriteTime, int size, byte[] data)
+        public bool Upload(string id, string relativePath, DateTime creationTime, DateTime lastWriteTime, int size, byte[] data)
         {
             MemoryStream stream = new MemoryStream(data);
 
@@ -54,7 +54,7 @@ namespace NooSphere.Cloud.Data.Storage
 
             using (var client = SetupClient())
             {
-                client.PutObject(req.WithBucketName(bucketName).WithKey(id.ToString()));
+                client.PutObject(req.WithBucketName(bucketName).WithKey(id));
             }
 
             return true;

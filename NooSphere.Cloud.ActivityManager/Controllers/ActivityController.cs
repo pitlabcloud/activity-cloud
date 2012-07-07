@@ -18,12 +18,26 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class ActivityController : BaseController
     {
+        /// <summary>
+        /// Get a complete list of activities.
+        /// </summary>
+        /// <returns>Json representation of the list of activities.</returns>
         [RequireUser]
         public List<JObject> Get()
         {
-            return ActivityStorage.Get();
+            List<Activity> activities = ActivityRegistry.Get();
+            foreach(Activity activity in activities)
+                if(activity.Actions != null && activity.Actions.Count > 0)
+                    foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
+                        Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDownload, resource);
+            return ActivityStorage.Get();   
         }
 
+        /// <summary>
+        /// Get the activity that matches the required activity Id.
+        /// </summary>
+        /// <param name="activityId">Guid representation of the activity Id.</param>
+        /// <returns>Json representation of the activity.</returns>
         [RequireUser]
         public object Get(Guid activityId)
         {
@@ -34,6 +48,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                 return null;
         }
 
+        /// <summary>
+        /// Create an activity in Activity Cloud.
+        /// </summary>
+        /// <param name="data">Json representation of the activity.</param>
         [RequireUser]
         public void Post(JObject data)
         {
@@ -49,6 +67,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             }
         }
 
+        /// <summary>
+        /// Subscribe to activity matching the specified activity Id.
+        /// </summary>
+        /// <param name="activityId">Guid representation of the activity Id.</param>
         [RequireUser]
         [HttpPost]
         public void Subscribe(Guid activityId)
@@ -62,6 +84,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             }
         }
 
+        /// <summary>
+        /// Unsubscribe from activity matching the specified activity Id.
+        /// </summary>
+        /// <param name="activityId">Guid representation of the activity Id.</param>
         [RequireUser]
         [HttpDelete]
         public void Unsubscribe(Guid activityId)
@@ -71,6 +97,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                 Notifier.Unsubscribe(ConnectionId, activityId.ToString());
         }
 
+        /// <summary>
+        /// Update activity in Activity Cloud.
+        /// </summary>
+        /// <param name="activityId">Guid representation of the activity Id.</param>
+        /// <param name="data">Json representation of the activity.</param>
         [RequireUser]
         public void Put(Guid activityId, JObject data)
         {
@@ -88,6 +119,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete activity from Activity Cloud.
+        /// </summary>
+        /// <param name="activityId">Guid representation of the activity Id.</param>
         [RequireUser]
         public void Delete(Guid activityId)
         {

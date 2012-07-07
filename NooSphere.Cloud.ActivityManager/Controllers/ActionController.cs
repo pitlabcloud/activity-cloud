@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Description;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
@@ -12,10 +13,9 @@ using NooSphere.Core.ActivityModel;
 
 namespace NooSphere.Cloud.ActivityManager.Controllers
 {
-
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ActionController : BaseController
     {
-
         [RequireUser]
         [AcceptVerbs("POST")]
         public void Post(Guid activityId, JObject action)

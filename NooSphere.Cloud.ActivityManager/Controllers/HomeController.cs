@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 
 namespace NooSphere.Cloud.ActivityManager.Controllers
@@ -10,7 +11,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var apiExplorer = GlobalConfiguration.Configuration.Services.GetApiExplorer();
+            return View(apiExplorer);
         }
     }
 }

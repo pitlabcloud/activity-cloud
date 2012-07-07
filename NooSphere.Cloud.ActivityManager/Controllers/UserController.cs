@@ -17,6 +17,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
     public class UserController : BaseController
     {
+        /// <summary>
+        /// Get a complete list of users.
+        /// </summary>
+        /// <returns>Json representation of the list of users.</returns>
         [RequireUser]
         public List<JObject> Get()
         {
@@ -25,6 +29,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Get the user that matches the required user Id.
+        /// </summary>
+        /// <param name="userId">Guid representation of the user Id.</param>
+        /// <returns>Json representation of the user.</returns>
         [RequireUser]
         public JObject Get(Guid userId)
         {
@@ -33,6 +42,12 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Create user in Activity Cloud
+        /// </summary>
+        /// <param name="connectionId">Guid representation of the connection Id.</param>
+        /// <param name="user">Json representation of the user.</param>
+        /// <returns>Returns true if user is added, false if not.</returns>
         public bool Post(Guid connectionId, JObject user)
         {
             if (user != null && IsFormatOk(user))
@@ -53,6 +68,12 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return false;
         }
 
+        /// <summary>
+        /// Update user in Activity Cloud.
+        /// </summary>
+        /// <param name="userId">Guid representation of the user Id.</param>
+        /// <param name="user">Json representation of the user.</param>
+        /// <returns>Returns true if user is updated, false if not.</returns>
         [RequireUser]
         public bool Put(Guid userId, JObject user)
         {
@@ -68,6 +89,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return false;
         }
 
+        /// <summary>
+        /// Delete user in Activity Cloud.
+        /// </summary>
+        /// <param name="userId">Guid representation of the user Id.</param>
+        /// <returns>Returns true if user is deleted, false if not.</returns>
         [RequireUser]
         public bool Delete(Guid userId)
         {
@@ -87,6 +113,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return false;
         }
 
+        /// <summary>
+        /// Log in user with the specified email.
+        /// </summary>
+        /// <param name="email">Email of the user.</param>
+        /// <returns>Returns true if login was performed, false if not.</returns>
         public bool Login(string email)
         {
             if (CurrentUser != null) return false;
@@ -100,6 +131,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return false;
         }
 
+        /// <summary>
+        /// Log out user with the specified email.
+        /// </summary>
+        /// <param name="email">Email of the user.</param>
+        /// <returns>Returns true if logout was performed, false if not.</returns>
         [RequireUser]
         public bool Logout(string email)
         {
