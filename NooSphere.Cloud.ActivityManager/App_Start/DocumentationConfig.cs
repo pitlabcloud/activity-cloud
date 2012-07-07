@@ -12,7 +12,7 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
     {
         public static void RegisterDocumentation(DefaultServices services)
         {
-            services.Replace(typeof(IDocumentationProvider), new XmlCommentDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/ApiHelp.XML")));
+            services.Replace(typeof(IDocumentationProvider), new XmlCommentDocumentationProvider(HttpContext.Current.Server.MapPath("~/Content/ApiHelp.XML")));
         }
     }
 }
