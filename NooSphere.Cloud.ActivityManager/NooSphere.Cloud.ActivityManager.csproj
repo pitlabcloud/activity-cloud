@@ -52,6 +52,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BookSleeve">
+      <HintPath>..\packages\BookSleeve.1.1.0.7\lib\BookSleeve.dll</HintPath>
+    </Reference>
     <Reference Include="MVC.ApiExplorer, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MVC.ApiExplorer.0.11.0.0\lib\MVC.ApiExplorer.dll</HintPath>
@@ -59,6 +62,9 @@
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\packages\protobuf-net.2.0.0.480\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="SignalR, Version=0.5.1.10625, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -71,6 +77,9 @@
     <Reference Include="SignalR.Hosting.Common, Version=0.5.1.10625, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SignalR.Hosting.Common.0.5.2\lib\net40\SignalR.Hosting.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SignalR.Redis">
+      <HintPath>..\packages\SignalR.Redis.0.1.0\lib\net40\SignalR.Redis.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
