@@ -14,7 +14,7 @@ namespace NooSphere.Cloud.Data.Storage
 {
     public class ActivityStorage : BaseStorage
     {
-        private const string bucketName = "dk.itu.pitlab.activitycloud.activities";
+        private const string bucketName = "noosphere.activitycloud.activities";
 
         public ActivityStorage(string accessKey, string accessSecret)
             : base(accessKey, accessSecret) { }

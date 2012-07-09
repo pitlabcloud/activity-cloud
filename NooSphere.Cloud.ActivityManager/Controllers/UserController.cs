@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
 using System.Net.Http;
+using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
@@ -118,6 +119,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         /// </summary>
         /// <param name="email">Email of the user.</param>
         /// <returns>Returns true if login was performed, false if not.</returns>
+        [RequireUser]
+        [HttpPost]
         public bool Login(string email)
         {
             if (CurrentUser != null) return false;
@@ -137,6 +140,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         /// <param name="email">Email of the user.</param>
         /// <returns>Returns true if logout was performed, false if not.</returns>
         [RequireUser]
+        [HttpPost]
         public bool Logout(string email)
         {
             if (CurrentUser == null) return false;

@@ -9,7 +9,7 @@ namespace NooSphere.Cloud.Data.Storage
 {
     public class FileStorage
     {
-        private const string bucketName = "dk.itu.pitlab.activitycloud.files";
+        private const string bucketName = "noosphere.activitycloud.files";
 
         private const string RelativePathKey = "RelativePath";
         private const string CreationTimeKey = "CreationTime";
