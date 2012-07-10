@@ -30,7 +30,7 @@ namespace NooSphere.Cloud.ActivityManager
             string port = ConfigurationManager.AppSettings["redis.port"];
             string password = ConfigurationManager.AppSettings["redis.password"];
 
-            GlobalHost.DependencyResolver.UseRedis(server, Int32.Parse(port), password, "SignalR.Redis.Sample");
+            GlobalHost.DependencyResolver.UseRedis(server, Int32.Parse(port), password, "ActivityCloud");
         }
     }
 }
