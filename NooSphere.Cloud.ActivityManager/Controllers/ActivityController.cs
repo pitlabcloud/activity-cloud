@@ -57,7 +57,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         {
             if (data != null)
             {
-                if (data["Id"] == null) data["Id"] = Guid.NewGuid().ToString();
+                if (data["Id"] == null && data["Id"].HasValues) data["Id"] = Guid.NewGuid().ToString();
 
                 var activity = JsonConvert.DeserializeObject<Activity>(data.ToString());
                 if (activity.Participants == null || activity.Participants.Count == 0)

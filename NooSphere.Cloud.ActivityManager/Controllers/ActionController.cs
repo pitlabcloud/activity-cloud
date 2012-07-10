@@ -22,7 +22,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         {
             if (action != null)
             {
-                if (action["Id"] == null) action["Id"] = Guid.NewGuid().ToString();
+                if (action["Id"] == null && action["Id"].HasValues) action["Id"] = Guid.NewGuid().ToString();
                 NooSphere.Core.ActivityModel.Action obj = JsonConvert.DeserializeObject<NooSphere.Core.ActivityModel.Action>(action.ToString());
                 
                 var activity = ActivityRegistry.Get(activityId);

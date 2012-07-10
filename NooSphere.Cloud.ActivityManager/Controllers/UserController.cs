@@ -55,7 +55,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             {
                 if (!UserRegistry.ExistingEmail(user["Email"].ToString()))
                 {
-                    if (!user["Id"].HasValues) user["Id"] = Guid.NewGuid().ToString();
+                    if (user["Id"] != null && !user["Id"].HasValues) user["Id"] = Guid.NewGuid().ToString();
 
                     User obj = JsonConvert.DeserializeObject<User>(user.ToString());
                     if (UserRegistry.Add(obj))

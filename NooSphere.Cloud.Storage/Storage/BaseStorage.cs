@@ -88,7 +88,13 @@ namespace NooSphere.Cloud.Data.Storage
 
         private AmazonS3Client SetupClient()
         {
-            return new AmazonS3Client(AccessKey, AccessSecret);
+            AmazonS3Config S3Config = new AmazonS3Config
+            {
+                ServiceURL = "s3.amazonaws.com",
+                CommunicationProtocol = Amazon.S3.Model.Protocol.HTTP
+            };
+
+            return new AmazonS3Client(AccessKey, AccessSecret, S3Config);
         }
     }
 }
