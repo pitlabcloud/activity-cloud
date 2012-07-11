@@ -156,6 +156,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SubscriptionController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Documentation\XmlCommentDocumentationProvider.cs" />

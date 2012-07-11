@@ -68,36 +68,6 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         }
 
         /// <summary>
-        /// Subscribe to activity matching the specified activity Id.
-        /// </summary>
-        /// <param name="activityId">Guid representation of the activity Id.</param>
-        [RequireUser]
-        [HttpPost]
-        public void Subscribe(Guid activityId)
-        {
-            Activity activity = ActivityRegistry.Get(activityId);
-            if (activity != null && IsParticipant(activity))
-            {
-                Notifier.Subscribe(ConnectionId, activityId.ToString());
-                foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
-                    Notifier.NotifyGroup(activityId.ToString(), NotificationType.FileDownload, resource);
-            }
-        }
-
-        /// <summary>
-        /// Unsubscribe from activity matching the specified activity Id.
-        /// </summary>
-        /// <param name="activityId">Guid representation of the activity Id.</param>
-        [RequireUser]
-        [HttpDelete]
-        public void Unsubscribe(Guid activityId)
-        {
-            Activity activity = ActivityRegistry.Get(activityId);
-            if (activity != null && IsParticipant(activity))
-                Notifier.Unsubscribe(ConnectionId, activityId.ToString());
-        }
-
-        /// <summary>
         /// Update activity in Activity Cloud.
         /// </summary>
         /// <param name="activityId">Guid representation of the activity Id.</param>

@@ -23,18 +23,6 @@
             </summary>
             <param name="data">Json representation of the activity.</param>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ActivityController.Subscribe(System.Guid)">
-            <summary>
-            Subscribe to activity matching the specified activity Id.
-            </summary>
-            <param name="activityId">Guid representation of the activity Id.</param>
-        </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ActivityController.Unsubscribe(System.Guid)">
-            <summary>
-            Unsubscribe from activity matching the specified activity Id.
-            </summary>
-            <param name="activityId">Guid representation of the activity Id.</param>
-        </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ActivityController.Put(System.Guid,Newtonsoft.Json.Linq.JObject)">
             <summary>
             Update activity in Activity Cloud.
@@ -69,6 +57,18 @@
             <param name="lastWriteTime">Last write time of the resource.</param>
             <param name="relativePath">Relative path including the filename.</param>
             <param name="data">The resource as a byte[].</param>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.SubscriptionController.Post(System.Guid)">
+            <summary>
+            Subscribe to activity matching the specified activity Id.
+            </summary>
+            <param name="activityId">Guid representation of the activity Id.</param>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.SubscriptionController.Delete(System.Guid)">
+            <summary>
+            Unsubscribe from activity matching the specified activity Id.
+            </summary>
+            <param name="activityId">Guid representation of the activity Id.</param>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Get">
             <summary>
