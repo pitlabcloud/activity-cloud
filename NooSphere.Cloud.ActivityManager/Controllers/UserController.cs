@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,24 +39,37 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         [RequireUser]
         public JObject Get(Guid userId)
         {
-            var user = UserStorage.Get(userId);
-            if(user != null) return user;
+            User user = UserRegistry.Get(userId);
+            if (user != null)
+                return UserObject(user);
+            return null;
+        }
+
+        /// <summary>
+        /// Get the user that matches the required email.
+        /// </summary>
+        /// <param name="email">Email of the specific user.</param>
+        /// <returns>Json representation of the user.</returns>
+        public object Get(string email)
+        {
+            User user = UserRegistry.GetUserOnEmail(email);
+            if (user != null)
+                return UserObject(user);
             return null;
         }
 
         /// <summary>
         /// Create user in Activity Cloud
         /// </summary>
-        /// <param name="connectionId">Guid representation of the connection Id.</param>
         /// <param name="user">Json representation of the user.</param>
-        /// <returns>Returns true if user is added, false if not.</returns>
-        public bool Post(Guid connectionId, JObject user)
+        /// <returns>Returns true if user is added, false if user already exists.</returns>
+        public bool Post(JObject user)
         {
             if (user != null && IsFormatOk(user))
             {
                 if (!UserRegistry.ExistingEmail(user["Email"].ToString()))
                 {
-                    if (user["Id"] != null && !user["Id"].HasValues) user["Id"] = Guid.NewGuid().ToString();
+                    if (user["Id"] == null && !user["Id"].HasValues) user["Id"] = Guid.NewGuid().ToString();
 
                     User obj = JsonConvert.DeserializeObject<User>(user.ToString());
                     if (UserRegistry.Add(obj))
@@ -114,44 +128,18 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return false;
         }
 
-        /// <summary>
-        /// Log in user with the specified email.
-        /// </summary>
-        /// <param name="email">Email of the user.</param>
-        /// <returns>Returns true if login was performed, false if not.</returns>
-        [RequireUser]
-        [HttpPost]
-        public bool Login(string email)
+        private JObject UserObject(User user)
         {
-            if (CurrentUser != null) return false;
-            var user = UserRegistry.GetUserOnEmail(email);
-            if (user != null && DeviceRegistry.ConnectUser(ConnectionId, user.Id))
+            JObject result = JObject.FromObject(user);
+            JObject storage = UserStorage.Get(user.Id);
+            foreach (JProperty node in storage.Properties())
             {
-                Notifier.Subscribe(ConnectionId, user.Id);
-                Notifier.NotifyAll(NotificationType.UserConnected, UserStorage.Get(user.Id));
-                return true;
+                if (result[node.Name] == null)
+                    result.Add(node.Name, node.Value);
+                else
+                    result[node.Name] = node.Value;
             }
-            return false;
-        }
-
-        /// <summary>
-        /// Log out user with the specified email.
-        /// </summary>
-        /// <param name="email">Email of the user.</param>
-        /// <returns>Returns true if logout was performed, false if not.</returns>
-        [RequireUser]
-        [HttpPost]
-        public bool Logout(string email)
-        {
-            if (CurrentUser == null) return false;
-            var user = UserRegistry.GetUserOnEmail(email);
-            if (user != null && CurrentUser.Id == user.Id && DeviceRegistry.DisconnectUser(user.Id))
-            {
-                Notifier.Unsubscribe(ConnectionId, user.Id);
-                Notifier.NotifyAll(NotificationType.UserDisconnected, UserStorage.Get(user.Id));
-                return true;
-            }
-            return false;
+            return result;
         }
 
         private bool IsFormatOk(JObject obj)
