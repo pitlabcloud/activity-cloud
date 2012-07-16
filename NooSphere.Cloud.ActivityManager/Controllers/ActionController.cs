@@ -45,18 +45,18 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             {
                 NooSphere.Core.ActivityModel.Action obj = JsonConvert.DeserializeObject<NooSphere.Core.ActivityModel.Action>(action.ToString());
                 // Get activity
-                var activity = ActivityRegistry.Get(activityId);
+                Activity activity = ActivityRegistry.Get(activityId);
 
                 if (IsParticipant((Activity)activity))
                 {
-                    var oldActivity = activity;
+                    Activity oldActivity = activity;
                     // Create new id and add ti activity storage
-                    ((Activity)oldActivity).Id = Guid.NewGuid();
+                    oldActivity.Id = Guid.NewGuid();
                     ActivityRegistry.Add(oldActivity);
                     // Add old activity to the new activity's history
-                    ((Activity)activity).History.AddFirst(((Activity)oldActivity).Id);
+                    activity.History.Insert(0, oldActivity.Id);
                     // Add action to activity
-                    ((Activity)activity).Actions.Add(obj);
+                    activity.Actions.Add(obj);
                     // Add updated activity to the activity storage
                     ActivityRegistry.Add(activity);
                     // Notify subscribers

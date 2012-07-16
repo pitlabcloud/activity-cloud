@@ -36,6 +36,14 @@ namespace NooSphere.Cloud.Data.Registry
             return collection.Insert(obj, SafeMode.True).Ok;
         }
 
+        protected bool Upsert(MongoCollection<object> collection, object obj, Guid id)
+        {
+            if (collection.FindOneById(id) != null)
+                return collection.Update(Query.EQ("_id", id), Update.Replace(obj), SafeMode.True).Ok;
+            else
+                return Add(collection, obj);
+        }
+
         protected bool Remove(MongoCollection<object> collection, Guid id)
         {
             return collection.Remove(Query.EQ("_id", id), SafeMode.True).Ok;

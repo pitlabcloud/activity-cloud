@@ -50,7 +50,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         #region Authorization
         protected bool IsOwner(Activity activity)
         {
-            if (activity.Participants.Count(p => p.Key == CurrentUser.Id && p.Value == Role.Owner.ToString()) == 1)
+            if (activity.Owner.Id == CurrentUser.Id)
                 return true;
             else
                 return false;
@@ -58,7 +58,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
         protected bool IsParticipant(Activity activity)
         {
-            if (activity.Participants.Count(p => p.Key == CurrentUser.Id) == 1)
+            if (activity.Participants.Count(p => p.Id == CurrentUser.Id) == 1)
                 return true;
             else
                 return false;

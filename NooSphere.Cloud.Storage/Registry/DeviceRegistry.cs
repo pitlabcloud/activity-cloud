@@ -30,7 +30,9 @@ namespace NooSphere.Cloud.Data.Registry
 
         public bool IsUserConnected(Guid connectionId)
         {
-            return Collection.FindAs<Device>(Query.And(Query.EQ("ConnectionId", connectionId), Query.Exists("UserId", true))).Count() > 0;
+            var device = Collection.FindAs<Device>(Query.And(Query.EQ("ConnectionId", connectionId), Query.Exists("UserId", true)));
+            if (device.Count() == 0) return false;
+            return device.First().UserId != Guid.Empty;
         }
 
         public bool RemoveOnConnectionId(Guid connectionId)
