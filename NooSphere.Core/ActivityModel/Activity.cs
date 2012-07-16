@@ -17,18 +17,20 @@ namespace NooSphere.Core.ActivityModel
             : base()
         {
             InitializeProperties();
+            IsHistory = false;
         }
 
         private void InitializeProperties()
         {
             this.Actions = new List<Action>();
-            this.Participants = new Dictionary<Guid, string>();
-            this.History = new LinkedList<Guid>();
+            this.Participants = new List<User>();
+            this.History = new List<Guid>();
         }
 
         public List<Action> Actions { get; set; }
-        public Dictionary<Guid, string> Participants { get; set; }
-        [JsonIgnore]
-        public LinkedList<Guid> History { get; set; }
+        public List<User> Participants { get; set; }
+        public User Owner { get; set; }
+        public bool IsHistory { get; set; }
+        public List<Guid> History { get; set; }
     }
 }

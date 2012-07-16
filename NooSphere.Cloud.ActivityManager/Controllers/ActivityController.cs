@@ -25,12 +25,16 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         [RequireUser]
         public List<JObject> Get()
         {
-            List<Activity> activities = ActivityRegistry.Get();
-            foreach(Activity activity in activities)
-                if(activity.Actions != null && activity.Actions.Count > 0)
+            List<JObject> result = new List<JObject>();
+            List<Activity> activities = ActivityRegistry.GetOnUser(CurrentUser.Id);
+            foreach (Activity activity in activities)
+            {
+                result.Add(ActivityStorage.Get(activity.Id));
+                if (activity.Actions != null && activity.Actions.Count > 0)
                     foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDownload, resource);
-            return ActivityStorage.Get();   
+            }
+            return result;
         }
 
         /// <summary>
@@ -61,7 +65,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
                 var activity = JsonConvert.DeserializeObject<Activity>(data.ToString());
                 if (activity.Participants == null || activity.Participants.Count == 0)
-                    data["Participants"] = JToken.FromObject(new Dictionary<string, string>() { { CurrentUser.Id.ToString(), Role.Owner.ToString() } });
+                {
+                    data["Owner"] = JToken.FromObject(CurrentUser);
+                    data["Participants"] = JToken.FromObject(new List<User>() { CurrentUser });
+                }
 
                 AddActivity(NotificationType.ActivityAdded, data);
             }
@@ -77,13 +84,22 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         {
             if (data != null)
             {
-                if (IsParticipant(data.ToObject<Activity>()))
+                if (IsOwner(data.ToObject<Activity>()) || IsParticipant(data.ToObject<Activity>()))
                 {
+                    // Return if no changes has been made
                     JObject oldActivity = ActivityStorage.Get(activityId);
+                    JObject compare = JObject.Parse(oldActivity.DeepClone().ToString());
+                    compare.Remove("History");
+                    if (compare.ToString().Equals(data.ToString())) return;
+                    
                     oldActivity["Id"] = Guid.NewGuid().ToString();
-                    AddActivity(NotificationType.None, oldActivity);
+                    AddActivity(NotificationType.None, oldActivity, true);
 
-                    data["History"].AddAfterSelf(oldActivity.ToObject<Activity>().Id);
+                    if (data["History"] == null)
+                        data["History"] = JToken.FromObject(new List<Guid>() { new Guid(oldActivity["Id"].ToString()) });
+                    else
+                        data["History"].AddAfterSelf(oldActivity);
+
                     AddActivity(NotificationType.ActivityUpdated, data);
                 }
             }
@@ -103,9 +119,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             }
         }
 
-        private bool AddActivity(NotificationType type, JObject data)
+        private bool AddActivity(NotificationType type, JObject data, bool asHistory = false)
         {
-            if (ActivityRegistry.Add(data.ToObject<Activity>()))
+            Activity activity = data.ToObject<Activity>();
+            if (asHistory) activity.IsHistory = asHistory;
+            if (ActivityRegistry.Upsert(activity.Id, activity))
             {
                 ActivityStorage.Add(data.ToObject<Activity>().Id, data);
                 Notifier.NotifyAll(type, data);

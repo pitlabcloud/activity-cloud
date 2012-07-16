@@ -24,7 +24,7 @@ namespace NooSphere.Cloud.Data.Storage
             return base.Get(bucketName);
         }
 
-        public new JObject Get(Guid id)
+        public JObject Get(Guid id)
         {
             return base.Get(bucketName, id);
         }

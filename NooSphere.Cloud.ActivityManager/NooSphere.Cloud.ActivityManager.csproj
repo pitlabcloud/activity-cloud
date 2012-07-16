@@ -154,6 +154,7 @@
     <Compile Include="Controllers\ActionController.cs" />
     <Compile Include="Controllers\ActivityController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SubscriptionController.cs" />

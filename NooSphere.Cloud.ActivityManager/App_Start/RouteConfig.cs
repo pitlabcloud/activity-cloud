@@ -61,18 +61,11 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
                 defaults: new { controller = "User", userId = RouteParameter.Optional }
             );
 
-            // REST Api routing (Login)
+            // REST Api routing (Devices)
             routes.MapHttpRoute(
-                name: "Api.Users.Login",
-                routeTemplate: "Api/Login/{email}",
-                defaults: new { controller = "User", action = "Login" }
-            );
-
-            // REST Api routing (Logout)
-            routes.MapHttpRoute(
-                name: "Api.Users.Logout",
-                routeTemplate: "Api/Logout/{email}",
-                defaults: new { controller = "User", action = "Logout" }
+                name: "Api.Devices",
+                routeTemplate: "Api/Users/{userId}/Device",
+                defaults: new { controller = "Device"}
             );
 
             // REST Api routing (For testing purposes)

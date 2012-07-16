@@ -36,6 +36,20 @@
             </summary>
             <param name="activityId">Guid representation of the activity Id.</param>
         </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.DeviceController.Post(System.Guid)">
+            <summary>
+            Register the device and pair it with the specified user.
+            </summary>
+            <param name="userId">Guid representation of a userId</param>
+            <returns>Returns true if device was registered to the user, false if user doesn't exist or device is already registered.</returns>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.DeviceController.Delete(System.Guid)">
+            <summary>
+            Unregister the device and remove the pairing with the specified user.
+            </summary>
+            <param name="userId">Json representation of a userId.</param>
+            <returns>Returns true if device was unregistered, false if device is not registered to user.</returns>
+        </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FileController.Get(System.Guid,System.Guid,System.Guid)">
             <summary>
             Download the resource.
@@ -83,13 +97,19 @@
             <param name="userId">Guid representation of the user Id.</param>
             <returns>Json representation of the user.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Post(System.Guid,Newtonsoft.Json.Linq.JObject)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Get(System.String)">
+            <summary>
+            Get the user that matches the required email.
+            </summary>
+            <param name="email">Email of the specific user.</param>
+            <returns>Json representation of the user.</returns>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Post(Newtonsoft.Json.Linq.JObject)">
             <summary>
             Create user in Activity Cloud
             </summary>
-            <param name="connectionId">Guid representation of the connection Id.</param>
             <param name="user">Json representation of the user.</param>
-            <returns>Returns true if user is added, false if not.</returns>
+            <returns>Returns true if user is added, false if user already exists.</returns>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Put(System.Guid,Newtonsoft.Json.Linq.JObject)">
             <summary>
@@ -105,20 +125,6 @@
             </summary>
             <param name="userId">Guid representation of the user Id.</param>
             <returns>Returns true if user is deleted, false if not.</returns>
-        </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Login(System.String)">
-            <summary>
-            Log in user with the specified email.
-            </summary>
-            <param name="email">Email of the user.</param>
-            <returns>Returns true if login was performed, false if not.</returns>
-        </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Logout(System.String)">
-            <summary>
-            Log out user with the specified email.
-            </summary>
-            <param name="email">Email of the user.</param>
-            <returns>Returns true if logout was performed, false if not.</returns>
         </member>
         <member name="T:NooSphere.Cloud.ActivityManager.Events.EventDispatcher">
             <summary>
