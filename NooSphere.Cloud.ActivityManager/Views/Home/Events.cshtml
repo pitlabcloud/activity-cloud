@@ -73,7 +73,19 @@
                                             Newtonsoft.Json.Linq.JObject data = Newtonsoft.Json.Linq.JObject.FromObject(new { ActivityId = Guid.NewGuid(), Participant = obj });
                                             @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(data));
                                             break;
-
+                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendAdded:
+                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendRequest:
+                                            u = new NooSphere.Core.ActivityModel.User();
+                                            u.Id = Guid.NewGuid();
+                                            u.Email = "my-friend@email.com";
+                                            u.Name = "My Friends name";
+                                            obj = Newtonsoft.Json.Linq.JObject.FromObject(u);
+                                            obj.Remove("Friends");
+                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
+                                            break;
+                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendDeleted:
+                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Guid.NewGuid()));
+                                            break;
                                     }
                                 }
                                 <br />

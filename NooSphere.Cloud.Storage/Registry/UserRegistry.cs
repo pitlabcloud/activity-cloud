@@ -57,6 +57,11 @@ namespace NooSphere.Cloud.Data.Registry
             return base.Add(Collection, obj);
         }
 
+        public bool Upsert(Guid id, User obj)
+        {
+            return base.Upsert(Collection, obj, id);
+        }
+
         public bool Remove(Guid id)
         {
             return base.Remove(Collection, id);

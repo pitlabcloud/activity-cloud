@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web.Http;
 using Newtonsoft.Json;
@@ -28,6 +29,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class ActivityController : BaseController
     {
+        #region Private Members
+        private ActivityRegistry ActivityRegistry = new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
+        private ActivityStorage ActivityStorage = new ActivityStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
+        #endregion
+
         #region Exposed API Methods
         /// <summary>
         /// Get a complete list of activities.

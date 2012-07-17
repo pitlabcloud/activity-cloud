@@ -13,6 +13,7 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
         {
             BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.Activity>();
             BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.Action>();
+            BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.FriendRequest>();
             BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.Resource>();
             BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.User>();
         }

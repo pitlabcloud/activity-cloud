@@ -13,6 +13,7 @@
 /// </licence>
 
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -28,6 +29,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class ActionController : BaseController
     {
+        #region Private Members
+        private ActivityRegistry ActivityRegistry = new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
+        private ActionRegistry ActionRegistry = new ActionRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
+        #endregion
+
         #region Exposed API Methods
         [RequireUser]
         [AcceptVerbs("POST")]
