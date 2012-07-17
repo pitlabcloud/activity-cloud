@@ -1,5 +1,18 @@
-﻿using System;
-using System.Configuration;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.Data.Storage;
 
@@ -7,6 +20,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class FileController : BaseController
     {
+        #region Exposed API Methods
         /// <summary>
         /// Download the resource.
         /// </summary>
@@ -34,13 +48,15 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         [RequireUser]
         public void Post(Guid activityId, Guid actionId, Guid resourceId, int size, string creationTime, string lastWriteTime, string relativePath, byte[] data)
         {
-
             FileStorage.Upload(Id(activityId, actionId, resourceId), relativePath, DateTime.Parse(creationTime), DateTime.Parse(lastWriteTime), size, data);
         }
+        #endregion
 
+        #region Private Methods
         private string Id(Guid activityId, Guid actionId, Guid resourceId)
         {
             return "Activities/" + activityId + "/Actions/" + actionId + "/Resources/" + resourceId;
         }
+        #endregion
     }
 }

@@ -1,8 +1,21 @@
-﻿using System;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
-using NooSphere.Cloud.Data;
 using NooSphere.Cloud.Data.Registry;
 using NooSphere.Core.ActivityModel;
 using SignalR;
@@ -24,7 +37,8 @@ namespace NooSphere.Cloud.ActivityManager.Events
         protected override Task OnConnectedAsync(IRequest request, string connectionId)
         {
             DeviceRegistry.Add(new Device { Id = Guid.NewGuid(), ConnectionId = new Guid(connectionId) });
-            return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceConnected, new { ConnectionId = connectionId }));
+            return null;
+            //return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceConnected, new { ConnectionId = connectionId }));
         }
 
         /// <summary>
@@ -36,7 +50,8 @@ namespace NooSphere.Cloud.ActivityManager.Events
         /// <returns></returns>
         protected override Task OnReconnectedAsync(IRequest request, IEnumerable<string> groups, string connectionId)
         {
-            return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceReconnected, new { ConnectionId = connectionId }));
+            return null;
+            //return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceReconnected, new { ConnectionId = connectionId }));
         }
 
         /// <summary>
@@ -59,7 +74,8 @@ namespace NooSphere.Cloud.ActivityManager.Events
         protected override Task OnDisconnectAsync(string connectionId)
         {
             DeviceRegistry.RemoveOnConnectionId(new Guid(connectionId));
-            return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceDisconnected, new { ConnectionId = connectionId }));
+            return null;
+            //return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceDisconnected, new { ConnectionId = connectionId }));
         }
 
         /// <summary>

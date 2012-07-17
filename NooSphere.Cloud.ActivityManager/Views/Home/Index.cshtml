@@ -1,90 +1,28 @@
-@model System.Web.Http.Description.IApiExplorer    
-<header>
-    <div class="content-wrapper">       
-        <p class="site-title"><a href="/"> <img src="~/Images/logo.png" /></a></p>
-    </div>
-</header>
-  <div id="body">
-    <section class="featured">
-        <div class="content-wrapper">
-            <hgroup class="title">
-                <h1>Activity Cloud API</h1>
-            </hgroup>
-            <hgroup>
-                <h5>Activity Cloud is a cloud-based activity manager. Build in ASP .NET MVC 4, activities are stored in Amazon's S3 cloud. Through events send with SignalR, the client is automatically
-                notified whenever changes are applied to the activities.</h5>
-            </hgroup>
-        </div>
-    </section>
-    <section class="content-wrapper main-content clear-fix">
-            <h3>How to connect to Activity Cloud:</h3>
-            <hgroup>
-            To connect to Activity Cloud, you need to install SignalR, which is broken up into a few package on NuGet:
-            <ul>
-                <li>SignalR - A meta package that brings in SignalR.Server and SignalR.Js</li>
-                <li>SignalR.Server - Server side components needed to build SignalR endpoints</li>
-                <li>SignalR.Js - Javascript client for SignalR</li>
-                <li><b>SignalR.Client - .NET client for SignalR (you should install this)</b></li>
-                <li>SignalR.Ninject - Ninject dependeny resolver for SignalR</li>
-            </ul>
-            Then the code is dead simple. First you connect to Activity Cloud, and then you start the connection. If connection is obtained you set up a handler for receiving data.
-            <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
-                <code style="font-weight: bold;">
-                    Connection connection = new Connection("@(Request.Url.AbsoluteUri)Api/Connect");<br />
-                    Guid connectionId;
-                    <br /><br />
-                    connection.Start().ContinueWith(task => {<br />
-                    &nbsp;&nbsp;if (task.IsFaulted) {<br />
-                    &nbsp;&nbsp;&nbsp;&nbsp;Failed();<br />
-                    &nbsp;&nbsp;} else {<br />
-                    &nbsp;&nbsp;&nbsp;&nbsp;connectionId = connection.ConnectionId);<br />
-                    &nbsp;&nbsp;&nbsp;&nbsp;connection.Received += data => {<br />
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HandleReceivedData(data);<br />
-                    &nbsp;&nbsp;&nbsp;&nbsp;};<br />
-                    &nbsp;&nbsp;}<br />
-                    });
-                </code>
-            </p>
-            It's as simple as that. We are now connected to Activity Cloud through a persistant connection, thus being able to receive events from Activity Cloud.
-            </hgroup>
-            <hgroup>
-            <h3>Authentication</h3>
-            The ConnectionId is received when establishing the persistent connection is used in (almost) every API request. By passing the connectionId in the authorization header,
-            the request will be recognized in each call. An authorization header could look like this:
-            <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
-                <code style="font-weight: bold;">
-                    Authorization: ab83863a-47fe-4e7c-a927-ae5cec277799
-                </code>
-            </p>
-            </hgroup>
-            <hgroup>
-            <h3>Creating a user and logging in</h3>
-            In order to get access to specific activities and resources, you need to be logged in. First you would need to create a user with an email  
-            </hgroup>
-            <h3>Activity Cloud APIs</h3>
-            <hgroup>
-            The following methods are available within Activity Cloud API:
-                <ul>
-                    @foreach (var api in Model.ApiDescriptions)
-                    {
-                        <li>
-                            <h5>@api.HttpMethod @api.RelativePath</h5>
-                            <blockquote>
-                                <p>@api.Documentation</p>
-                                @if (api.ParameterDescriptions.Count > 0)
+@model System.Web.Http.Description.IApiExplorer
+<section class="content-wrapper main-content clear-fix">
+    <h3>Activity Cloud APIs</h3>
+    <hgroup>
+    The following methods are available within Activity Cloud API:
+        <ul>
+            @foreach (var api in Model.ApiDescriptions)
+            {
+                <li>
+                    <h5>@api.HttpMethod @api.RelativePath</h5>
+                    <blockquote>
+                        <p>@api.Documentation</p>
+                        @if (api.ParameterDescriptions.Count > 0)
+                        {
+                            <h6>Parameters</h6>
+                            <ul>
+                                @foreach (var parameter in api.ParameterDescriptions)
                                 {
-                                    <h6>Parameters</h6>
-                                    <ul>
-                                        @foreach (var parameter in api.ParameterDescriptions)
-                                        {
-                                            <li>@parameter.Name: @parameter.Documentation (@parameter.Source)</li>
-                                        }
-                                    </ul>
+                                    <li>@parameter.Name: @parameter.Documentation (@parameter.Source)</li>
                                 }
-                            </blockquote>
-                        </li>
-                    }
-                </ul>
-            </hgroup>
-      </section>
-  </div>
+                            </ul>
+                        }
+                    </blockquote>
+                </li>
+            }
+        </ul>
+    </hgroup>
+</section>

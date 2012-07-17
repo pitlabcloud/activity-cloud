@@ -1,5 +1,18 @@
-﻿using System;
-using System.Configuration;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -7,7 +20,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.ActivityManager.Events;
-using NooSphere.Cloud.Data;
 using NooSphere.Cloud.Data.Registry;
 using NooSphere.Core.ActivityModel;
 
@@ -16,6 +28,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class ActionController : BaseController
     {
+        #region Exposed API Methods
         [RequireUser]
         [AcceptVerbs("POST")]
         public void Post(Guid activityId, JObject action)
@@ -32,7 +45,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                     ((Activity)activity).Actions.Add(obj);
 
                     // Notify subscribers
-                    Notifier.NotifyAll(NotificationType.ActionAdded, action);
+                    //Notifier.NotifyAll(NotificationType.ActionAdded, action);
                 }
             }
         }
@@ -60,7 +73,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                     // Add updated activity to the activity storage
                     ActivityRegistry.Add(activity);
                     // Notify subscribers
-                    Notifier.NotifyAll(NotificationType.ActionUpdated, action);
+                    //Notifier.NotifyAll(NotificationType.ActionUpdated, action);
                 }
             }
         }
@@ -79,9 +92,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                     // Remove action in activity
                     ((Activity)activity).Actions.Remove(action);
                     // Notify subscribers
-                    Notifier.NotifyAll(NotificationType.ActionDeleted, action);
+                    //Notifier.NotifyAll(NotificationType.ActionDeleted, action);
                 }
             }
         }
+        #endregion
     }
 }

@@ -1,0 +1,36 @@
+﻿<section class="content-wrapper main-content clear-fix">
+    <h3>Extend the Activity Model</h3>
+    <hgroup>
+    The activity model is really simple and can be extended to include the properties that fits your system. The following are the base classes, that are used in Activity Cloud:
+    <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
+        <code style="font-weight: bold;">
+            public class Action {<br />
+            &nbsp;&nbsp;public Guid Id { get; set; }<br />
+            &nbsp;&nbsp;public string Name { get; set; }<br />
+            &nbsp;&nbsp;public List@("<")Resource> Resources { get; set; }<br />
+            }<br />
+            public class Activity {<br />
+            &nbsp;&nbsp;public Guid Id { get; set; }<br />
+            &nbsp;&nbsp;public string Name { get; set; }<br />
+            &nbsp;&nbsp;public List@("<")Action> Actions { get; set; }<br />
+            &nbsp;&nbsp;public List@("<")User> Participants { get; set; }<br />
+            &nbsp;&nbsp;public User Owner { get; set; }<br />
+            }<br />
+            public class Resource {<br />
+            &nbsp;&nbsp;public Guid Id { get; set; }<br />
+            &nbsp;&nbsp;public Guid ActivityId { get; set; }<br />
+            &nbsp;&nbsp;public Guid ActionId { get; set; }<br />
+            &nbsp;&nbsp;public string RelativePath { get; set; }<br />
+            &nbsp;&nbsp;public int Size { get; set; }<br />
+            &nbsp;&nbsp;public string CreationTime { get; set; }<br />
+            &nbsp;&nbsp;public string LastWriteTime { get; set; }<br />
+            }<br />
+            public class User {<br />
+            &nbsp;&nbsp;public Guid Id { get; set; }<br />
+            &nbsp;&nbsp;public string Name { get; set; }<br />
+            &nbsp;&nbsp;public string Email { get; set; }<br />
+            }<br />
+        </code>
+    </p>
+    </hgroup>
+</section>

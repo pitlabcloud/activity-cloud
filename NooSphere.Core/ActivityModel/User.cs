@@ -1,19 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NooSphere.Core.ContextModel;
-using Newtonsoft.Json.Linq;
-using System.Web;
-using System.Xml;
-using System.Security.Principal;
-using MongoDB.Bson.Serialization.Attributes;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
 
+using System.Collections.Generic;
 namespace NooSphere.Core.ActivityModel
 {
-    [BsonKnownTypes(typeof(User))]
     public class User : BaseObject
     {
+        #region Properties
         public string Email { get; set; }
+        public List<User> Friends { get; set; }
+        #endregion
+
+        #region Constructors
+        public User()
+            : base()
+        {
+            InitializeProperties();
+        }
+        #endregion
+
+        #region Initializers
+        private void InitializeProperties()
+        {
+            Friends = new List<User>();
+        }
+        #endregion
     }
 }

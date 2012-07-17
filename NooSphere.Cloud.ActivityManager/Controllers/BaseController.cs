@@ -1,8 +1,20 @@
-﻿using System;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using System.Configuration;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
@@ -12,6 +24,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class BaseController : ApiController
     {
+        #region Protected Members
         protected ActionRegistry ActionRegistry = new ActionRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
         protected ActivityRegistry ActivityRegistry = new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
         protected DeviceRegistry DeviceRegistry = new DeviceRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
@@ -21,7 +34,9 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         protected ActivityStorage ActivityStorage = new ActivityStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
         protected UserStorage UserStorage = new UserStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
         protected FileStorage FileStorage = new FileStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
-        
+        #endregion
+
+        #region Protected Getters
         protected Guid ConnectionId {
             get
             {
@@ -46,8 +61,9 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                 return UserRegistry.Get(CurrentUserId); 
             } 
         }
+        #endregion
 
-        #region Authorization
+        #region Protected Methods
         protected bool IsOwner(Activity activity)
         {
             if (activity.Owner.Id == CurrentUser.Id)
