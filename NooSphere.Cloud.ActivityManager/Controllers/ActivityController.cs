@@ -1,15 +1,25 @@
-﻿using System;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Web;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.ActivityManager.Events;
-using NooSphere.Cloud.Data;
 using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
@@ -18,6 +28,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class ActivityController : BaseController
     {
+        #region Exposed API Methods
         /// <summary>
         /// Get a complete list of activities.
         /// </summary>
@@ -25,16 +36,15 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         [RequireUser]
         public List<JObject> Get()
         {
-            List<JObject> result = new List<JObject>();
             List<Activity> activities = ActivityRegistry.GetOnUser(CurrentUser.Id);
             foreach (Activity activity in activities)
             {
-                result.Add(ActivityStorage.Get(activity.Id));
+                Notifier.Subscribe(ConnectionId, activity.Id);
                 if (activity.Actions != null && activity.Actions.Count > 0)
                     foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDownload, resource);
             }
-            return result;
+            return ReturnObject(activities);
         }
 
         /// <summary>
@@ -43,11 +53,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         /// <param name="activityId">Guid representation of the activity Id.</param>
         /// <returns>Json representation of the activity.</returns>
         [RequireUser]
-        public object Get(Guid activityId)
+        public JObject Get(Guid activityId)
         {
             Activity activity = ActivityRegistry.Get(activityId);
-            if(IsParticipant(activity))
-                return activity;
+            if (IsParticipant(activity))
+            {
+                Notifier.Subscribe(ConnectionId, activity.Id);
+                return ReturnObject(activity);
+            }
             else
                 return null;
         }
@@ -61,9 +74,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         {
             if (data != null)
             {
-                if (data["Id"] == null && data["Id"].HasValues) data["Id"] = Guid.NewGuid().ToString();
+                if (data["Id"] == null && !data["Id"].HasValues)
+                    data["Id"] = Guid.NewGuid().ToString();
 
-                var activity = JsonConvert.DeserializeObject<Activity>(data.ToString());
+                Activity activity = JsonConvert.DeserializeObject<Activity>(data.ToString());
                 if (activity.Participants == null || activity.Participants.Count == 0)
                 {
                     data["Owner"] = JToken.FromObject(CurrentUser);
@@ -100,7 +114,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                     else
                         data["History"].AddAfterSelf(oldActivity);
 
-                    AddActivity(NotificationType.ActivityUpdated, data);
+                    UpdateActivity(NotificationType.ActivityUpdated, data);
                 }
             }
         }
@@ -118,15 +132,19 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                     RemoveActivity(NotificationType.ActivityDeleted, activityId);
             }
         }
+        #endregion
 
-        private bool AddActivity(NotificationType type, JObject data, bool asHistory = false)
+        #region Public Methods
+        [NonAction]
+        public bool AddActivity(NotificationType type, JObject data, bool asHistory = false)
         {
             Activity activity = data.ToObject<Activity>();
             if (asHistory) activity.IsHistory = asHistory;
-            if (ActivityRegistry.Upsert(activity.Id, activity))
+            if (ActivityRegistry.Add(activity))
             {
                 ActivityStorage.Add(data.ToObject<Activity>().Id, data);
-                Notifier.NotifyAll(type, data);
+                if (!asHistory) Notifier.Subscribe(ConnectionId, activity.Id);
+                Notifier.NotifyGroup(activity.Id, type, data);
                 foreach (Resource resource in data.ToObject<Activity>().Actions.SelectMany(action => action.Resources))
                     Notifier.NotifyGroup(CurrentUserId, NotificationType.FileUpload, resource);
                 return true;
@@ -134,15 +152,61 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return false;
         }
 
-        private bool RemoveActivity(NotificationType type, Guid activityId)
+        [NonAction]
+        public bool UpdateActivity(NotificationType type, JObject data)
         {
+            Activity activity = data.ToObject<Activity>();
+            if (ActivityRegistry.Upsert(activity.Id, activity))
+            {
+                ActivityStorage.Add(data.ToObject<Activity>().Id, data);
+                Notifier.NotifyGroup(activity.Id, type, data);
+                return true;
+            }
+            return false;
+        }
+
+        [NonAction]
+        public bool RemoveActivity(NotificationType type, Guid activityId)
+        {
+            Activity activity = ActivityRegistry.Get(activityId);
             if (ActivityRegistry.Remove(activityId))
             {
                 ActivityStorage.Remove(activityId);
+                foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
+                    Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDelete, resource);
                 Notifier.NotifyAll(NotificationType.ActivityDeleted, new { Id = activityId });
                 return true;
             }
             return false;
         }
+        #endregion
+
+        #region Private Methods
+        private List<JObject> ReturnObject(List<Activity> activities)
+        {
+            List<JObject> result = new List<JObject>();
+            foreach(Activity activity in activities)
+                result.Add(ReturnObject(activity));
+
+            return result;
+        }
+        private JObject ReturnObject(Activity activity)
+        {
+            JObject result = JObject.FromObject(activity);
+            JObject storage = ActivityStorage.Get(activity.Id);
+            foreach (JProperty node in storage.Properties())
+            {
+                if (result[node.Name] == null)
+                    result.Add(node.Name, node.Value);
+                else
+                    result[node.Name] = node.Value;
+            }
+
+            result.Remove("History");
+            result.Remove("IsHistory");
+
+            return result;
+        }
+        #endregion
     }
 }

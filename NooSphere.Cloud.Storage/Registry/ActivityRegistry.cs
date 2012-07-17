@@ -1,4 +1,18 @@
-﻿using System;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver;
@@ -9,14 +23,16 @@ namespace NooSphere.Cloud.Data.Registry
 {
     public class ActivityRegistry : BaseRegistry
     {
+        #region Constructors
         public ActivityRegistry(string connectionString) : base(connectionString) { }
+        #endregion
 
+        #region Public Methods
         public List<Activity> GetOnUser(Guid userId)
         {
             return Collection.FindAs<Activity>(Query.And(Query.EQ("Owner._id", userId),Query.EQ("IsHistory", false))).ToList();
         }
 
-        #region MongoDbStorage method pointers
         public List<Activity> Get()
         {
             return base.Get(Collection).Cast<Activity>().ToList();

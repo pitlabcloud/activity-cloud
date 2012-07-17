@@ -1,10 +1,22 @@
-﻿using System;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Newtonsoft.Json;
@@ -14,6 +26,7 @@ namespace NooSphere.Cloud.Data.Storage
 {
     public class BaseStorage
     {
+        #region Private Members
         private const string IdKey = "Id";
         private const string SizeKey = "Size";
         private const string CreationTimeKey = "CreationTime";
@@ -21,13 +34,17 @@ namespace NooSphere.Cloud.Data.Storage
 
         private string AccessKey;
         private string AccessSecret;
+        #endregion
 
+        #region Constructors
         public BaseStorage(string accessKey, string accessSecret)
         {
             AccessKey = accessKey;
             AccessSecret = accessSecret;
         }
+        #endregion
 
+        #region Protected Methods
         protected List<JObject> Get(string bucketName)
         {
             List<JObject> users = new List<JObject>();
@@ -85,7 +102,9 @@ namespace NooSphere.Cloud.Data.Storage
                 client.DeleteObject(new DeleteObjectRequest().WithBucketName(bucketName).WithKey(id.ToString()));
             }
         }
+        #endregion
 
+        #region Private Methods
         private AmazonS3Client SetupClient()
         {
             AmazonS3Config S3Config = new AmazonS3Config
@@ -96,5 +115,6 @@ namespace NooSphere.Cloud.Data.Storage
 
             return new AmazonS3Client(AccessKey, AccessSecret, S3Config);
         }
+        #endregion
     }
 }

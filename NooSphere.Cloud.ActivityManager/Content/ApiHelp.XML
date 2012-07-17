@@ -47,7 +47,7 @@
             <summary>
             Unregister the device and remove the pairing with the specified user.
             </summary>
-            <param name="userId">Json representation of a userId.</param>
+            <param name="userId">Guid representation of a userId.</param>
             <returns>Returns true if device was unregistered, false if device is not registered to user.</returns>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FileController.Get(System.Guid,System.Guid,System.Guid)">
@@ -71,6 +71,22 @@
             <param name="lastWriteTime">Last write time of the resource.</param>
             <param name="relativePath">Relative path including the filename.</param>
             <param name="data">The resource as a byte[].</param>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ParticipantController.Post(System.Guid,System.Guid)">
+            <summary>
+            Add participant to the specified activity.
+            </summary>
+            <param name="activityId">Guid representation of the activity Id.</param>
+            <param name="participantId">Guid representation of the user Id.</param>
+            <returns>Returns true if participant was added, false if not.</returns>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ParticipantController.Delete(System.Guid,System.Guid)">
+            <summary>
+            Remove a participant from the specified activity.
+            </summary>
+            <param name="activityId">Guid representation of the activity Id.</param>
+            <param name="participantId">Guid representation of the user Id.</param>
+            <returns>Returns true if participant was removed, false if not.</returns>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.SubscriptionController.Post(System.Guid)">
             <summary>
@@ -108,7 +124,7 @@
             <summary>
             Create user in Activity Cloud
             </summary>
-            <param name="user">Json representation of the user.</param>
+            <param name="data">Json representation of the user.</param>
             <returns>Returns true if user is added, false if user already exists.</returns>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Put(System.Guid,Newtonsoft.Json.Linq.JObject)">
@@ -116,7 +132,7 @@
             Update user in Activity Cloud.
             </summary>
             <param name="userId">Guid representation of the user Id.</param>
-            <param name="user">Json representation of the user.</param>
+            <param name="data">Json representation of the user.</param>
             <returns>Returns true if user is updated, false if not.</returns>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Delete(System.Guid)">
