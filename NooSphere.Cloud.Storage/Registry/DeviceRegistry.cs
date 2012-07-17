@@ -1,16 +1,33 @@
-﻿using System.Linq;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using NooSphere.Core.ActivityModel;
-using System;
 
 namespace NooSphere.Cloud.Data.Registry
 {
     public class DeviceRegistry : BaseRegistry
     {
+        #region Constructors
         public DeviceRegistry(string connectionString) : base(connectionString) { }
+        #endregion
 
+        #region Public Methods
         public Guid GetUserId(Guid connectionId)
         {
             List<Device> devices = Collection.FindAs<Device>(Query.EQ("ConnectionId", connectionId)).SetFields("UserId").ToList();
@@ -28,6 +45,11 @@ namespace NooSphere.Cloud.Data.Registry
             return Collection.Update(Query.EQ("UserId", userId), Update.Unset("UserId"), SafeMode.True).Ok;
         }
 
+        public int ConnectedDevices(Guid userId)
+        {
+            return (int)Collection.FindAs<Device>(Query.EQ("UserId", userId)).Count();
+        }
+
         public bool IsUserConnected(Guid connectionId)
         {
             var device = Collection.FindAs<Device>(Query.And(Query.EQ("ConnectionId", connectionId), Query.Exists("UserId", true)));
@@ -40,7 +62,6 @@ namespace NooSphere.Cloud.Data.Registry
             return Collection.Remove(Query.EQ("ConnectionId", connectionId), SafeMode.True).Ok;
         }
 
-        #region MongoDbStorage method pointers
         public List<Device> Get()
         {
             return base.Get(Collection).Cast<Device>().ToList();
