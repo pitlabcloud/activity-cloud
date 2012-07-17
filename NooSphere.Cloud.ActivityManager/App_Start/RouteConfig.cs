@@ -40,20 +40,6 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
                 defaults: new { controller = "Activity", activityId = RouteParameter.Optional }
             );
 
-            // REST Api routing (Subscribe)
-            routes.MapHttpRoute(
-                name: "Api.Activities.Subscribe",
-                routeTemplate: "Api/Activities/{activityId}/Subscribe",
-                defaults: new { controller = "Subscription" }
-            );
-
-            // REST Api routing (Unsubscribe)
-            routes.MapHttpRoute(
-                name: "Api.Activities.Unsubscribe",
-                routeTemplate: "Api/Activities/{activityId}/Unsubscribe",
-                defaults: new { controller = "Subscription" }
-            );
-
             // REST Api routing (Actions)
             routes.MapHttpRoute(
                 name: "Api.Activities.Actions",
@@ -82,18 +68,18 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
                 defaults: new { controller = "User", userId = RouteParameter.Optional }
             );
 
+            // REST Api routing (Friends)
+            routes.MapHttpRoute(
+                name: "Api.Friends",
+                routeTemplate: "Api/Users/{userId}/Friends/{friendId}",
+                defaults: new { controller = "Friend", friendId = RouteParameter.Optional }
+            );
+
             // REST Api routing (Devices)
             routes.MapHttpRoute(
                 name: "Api.Devices",
                 routeTemplate: "Api/Users/{userId}/Device",
                 defaults: new { controller = "Device" }
-            );
-
-            // REST Api routing (For testing purposes)
-            routes.MapHttpRoute(
-                name: "Api.Test",
-                routeTemplate: "Api/Test/{action}",
-                defaults: new { controller = "Test" }
             );
 
             // Website routing

@@ -25,15 +25,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
     public class BaseController : ApiController
     {
         #region Protected Members
-        protected ActionRegistry ActionRegistry = new ActionRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
-        protected ActivityRegistry ActivityRegistry = new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
         protected DeviceRegistry DeviceRegistry = new DeviceRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
         protected UserRegistry UserRegistry = new UserRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
-
-        protected ActionStorage ActionStorage = new ActionStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
-        protected ActivityStorage ActivityStorage = new ActivityStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
-        protected UserStorage UserStorage = new UserStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
-        protected FileStorage FileStorage = new FileStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
         #endregion
 
         #region Protected Getters

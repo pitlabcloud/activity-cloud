@@ -45,9 +45,9 @@ namespace NooSphere.Cloud.Data.Registry
             return Collection.Update(Query.EQ("UserId", userId), Update.Unset("UserId"), SafeMode.True).Ok;
         }
 
-        public int ConnectedDevices(Guid userId)
+        public List<Device> ConnectedDevices(Guid userId)
         {
-            return (int)Collection.FindAs<Device>(Query.EQ("UserId", userId)).Count();
+            return Collection.FindAs<Device>(Query.EQ("UserId", userId)).ToList();
         }
 
         public bool IsUserConnected(Guid connectionId)

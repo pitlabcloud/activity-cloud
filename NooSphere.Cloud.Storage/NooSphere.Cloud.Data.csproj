@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Registry\FriendRequstRegistry.cs" />
     <Compile Include="Storage\ActivityStorage.cs" />
     <Compile Include="Storage\BaseStorage.cs" />
     <Compile Include="Storage\ActionStorage.cs" />
