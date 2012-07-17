@@ -13,6 +13,7 @@
 /// </licence>
 
 using System;
+using System.Configuration;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.Data.Storage;
 
@@ -20,6 +21,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class FileController : BaseController
     {
+        #region Private Members
+        private FileStorage FileStorage = new FileStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
+        #endregion
+
         #region Exposed API Methods
         /// <summary>
         /// Download the resource.

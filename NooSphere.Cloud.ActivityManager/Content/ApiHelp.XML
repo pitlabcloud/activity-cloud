@@ -72,6 +72,37 @@
             <param name="relativePath">Relative path including the filename.</param>
             <param name="data">The resource as a byte[].</param>
         </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FriendController.Get(System.Guid)">
+            <summary>
+            Get a complete list of friends for the specific user.
+            </summary>
+            <returns>Json representation of the list of friends.</returns>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FriendController.Post(System.Guid,System.Guid)">
+            <summary>
+            Make a friend request.
+            </summary>
+            <param name="userId">Guid representation of the user Id.</param>
+            <param name="friendId">Guid representation of the friend Id.</param>
+            <returns>Returns true if the friend request was performed, false if not.</returns>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FriendController.Post(System.Guid,System.Guid,System.Boolean)">
+            <summary>
+            Respond to friend request.
+            </summary>
+            <param name="userId">Guid representation of the user Id.</param>
+            <param name="friendId">Guid representation of the friend Id.</param>
+            <param name="approve">Boolean; true to accept, false to decline.</param>
+            <returns>Returns true if response is processed, false if not.</returns>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FriendController.Delete(System.Guid,System.Guid)">
+            <summary>
+            Delete a friend connection.
+            </summary>
+            <param name="userId">Guid representation of the user Id.</param>
+            <param name="friendId">Guid representation of the friend Id.</param>
+            <returns>Returns true if the friend connection was deleted, false if not.</returns>
+        </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ParticipantController.Post(System.Guid,System.Guid)">
             <summary>
             Add participant to the specified activity.
@@ -87,18 +118,6 @@
             <param name="activityId">Guid representation of the activity Id.</param>
             <param name="participantId">Guid representation of the user Id.</param>
             <returns>Returns true if participant was removed, false if not.</returns>
-        </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.SubscriptionController.Post(System.Guid)">
-            <summary>
-            Subscribe to activity matching the specified activity Id.
-            </summary>
-            <param name="activityId">Guid representation of the activity Id.</param>
-        </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.SubscriptionController.Delete(System.Guid)">
-            <summary>
-            Unsubscribe from activity matching the specified activity Id.
-            </summary>
-            <param name="activityId">Guid representation of the activity Id.</param>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Get">
             <summary>

@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Newtonsoft.Json;
@@ -29,6 +30,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class UserController : BaseController
     {
+        #region Private Members
+        private UserStorage UserStorage = new UserStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
+        #endregion
+
         #region Exposed API Methods
         /// <summary>
         /// Get a complete list of users.
@@ -134,6 +139,18 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         }
 
         [NonAction]
+        public bool UpdateUser(JObject data)
+        {
+            User user = data.ToObject<User>();
+            if (UserRegistry.Upsert(user.Id, user))
+            {
+                UserStorage.Add(user.Id, data);
+                return true;
+            }
+            return false;
+        }
+
+        [NonAction]
         public bool RemoveUser(Guid userId)
         {
             if (UserRegistry.Remove(userId))
@@ -146,10 +163,9 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             }
             return false;
         }
-        #endregion
 
-        #region Private Methods
-        private List<JObject> ReturnObject(List<User> users)
+        [NonAction]
+        public List<JObject> ReturnObject(List<User> users)
         {
             List<JObject> result = new List<JObject>();
             foreach (User user in users)
@@ -158,7 +174,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             return result;
         }
 
-        private JObject ReturnObject(User user)
+        [NonAction]
+        public JObject ReturnObject(User user)
         {
             JObject result = JObject.FromObject(user);
             JObject storage = UserStorage.Get(user.Id);

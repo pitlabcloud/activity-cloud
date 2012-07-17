@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="ActivityModel\BaseObject.cs" />
     <Compile Include="ActivityModel\Device.cs" />
+    <Compile Include="ActivityModel\FriendRequest.cs" />
     <Compile Include="ActivityModel\Resource.cs" />
     <Compile Include="ActivityModel\Action.cs" />
     <Compile Include="ActivityModel\Activity.cs" />

@@ -1,5 +1,20 @@
-﻿using System;
+﻿/// <licence>
+/// 
+/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+/// 
+/// Pervasive Interaction Technology Laboratory (pIT lab)
+/// IT University of Copenhagen
+///
+/// This library is free software; you can redistribute it and/or 
+/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+/// as published by the Free Software Foundation. Check 
+/// http://www.gnu.org/licenses/gpl.html for details.
+/// 
+/// </licence>
+
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -8,6 +23,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.ActivityManager.Events;
+using NooSphere.Cloud.Data.Registry;
+using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
 
 namespace NooSphere.Cloud.ActivityManager.Controllers
@@ -16,6 +33,9 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
     {
         #region Private Members
         private ActivityController ActivityController = new ActivityController();
+        private ActivityRegistry ActivityRegistry = new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
+        private UserStorage UserStorage = new UserStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
+        private ActivityStorage ActivityStorage = new ActivityStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
         #endregion
 
         #region Exposed API Methods
@@ -62,9 +82,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
                 List<JObject> result = new List<JObject>();
                 foreach (User p in participants)
-                {
                     result.Add(UserStorage.Get(p.Id));
-                }
 
                 JObject completeActivity = ActivityStorage.Get(activityId);
                 completeActivity["Participants"] = JToken.FromObject(result);

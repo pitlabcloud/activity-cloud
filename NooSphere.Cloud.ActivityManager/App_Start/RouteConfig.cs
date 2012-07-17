@@ -68,18 +68,18 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
                 defaults: new { controller = "User", userId = RouteParameter.Optional }
             );
 
+            // REST Api routing (Friends)
+            routes.MapHttpRoute(
+                name: "Api.Friends",
+                routeTemplate: "Api/Users/{userId}/Friends/{friendId}",
+                defaults: new { controller = "Friend", friendId = RouteParameter.Optional }
+            );
+
             // REST Api routing (Devices)
             routes.MapHttpRoute(
                 name: "Api.Devices",
                 routeTemplate: "Api/Users/{userId}/Device",
                 defaults: new { controller = "Device" }
-            );
-
-            // REST Api routing (For testing purposes)
-            routes.MapHttpRoute(
-                name: "Api.Test",
-                routeTemplate: "Api/Test/{action}",
-                defaults: new { controller = "Test" }
             );
 
             // Website routing
