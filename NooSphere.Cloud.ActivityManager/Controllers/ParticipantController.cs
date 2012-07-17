@@ -39,6 +39,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
                 ActivityController.UpdateActivity(Events.NotificationType.None, activity);
                 Notifier.NotifyGroup(activityId, NotificationType.ParticipantAdded, new { ActivityId = activityId, Participant = participant });
+                Notifier.NotifyGroup(participantId, NotificationType.ActivityAdded, activity);
                 return true;
             }
             return false;
@@ -70,6 +71,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
                 ActivityController.UpdateActivity(Events.NotificationType.None, completeActivity);
                 Notifier.NotifyGroup(activityId, NotificationType.ParticipantRemoved, new { ActivityId = activityId, Participant = participant });
+                Notifier.NotifyGroup(participantId, NotificationType.ActivityDeleted, new { Id = activity.Id } );
 
                 return true;
             }

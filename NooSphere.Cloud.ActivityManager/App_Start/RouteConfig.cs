@@ -40,20 +40,6 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
                 defaults: new { controller = "Activity", activityId = RouteParameter.Optional }
             );
 
-            // REST Api routing (Subscribe)
-            routes.MapHttpRoute(
-                name: "Api.Activities.Subscribe",
-                routeTemplate: "Api/Activities/{activityId}/Subscribe",
-                defaults: new { controller = "Subscription" }
-            );
-
-            // REST Api routing (Unsubscribe)
-            routes.MapHttpRoute(
-                name: "Api.Activities.Unsubscribe",
-                routeTemplate: "Api/Activities/{activityId}/Unsubscribe",
-                defaults: new { controller = "Subscription" }
-            );
-
             // REST Api routing (Actions)
             routes.MapHttpRoute(
                 name: "Api.Activities.Actions",

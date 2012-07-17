@@ -26,7 +26,6 @@ namespace NooSphere.Core.ActivityModel
             : base()
         {
             InitializeProperties();
-            IsHistory = false;
         }
         #endregion
 
@@ -36,6 +35,7 @@ namespace NooSphere.Core.ActivityModel
             this.Actions = new List<Action>();
             this.Participants = new List<User>();
             this.History = new List<Guid>();
+            this.IsHistory = false;
         }
         #endregion
 
