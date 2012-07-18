@@ -12,16 +12,26 @@
 /// 
 /// </licence>
 
+using System;
 using System.Web.Http;
 using System.Web.Mvc;
+using NooSphere.Cloud.ActivityManager.Controllers.Api;
 
 namespace NooSphere.Cloud.ActivityManager.Controllers
 {
     public class AdminController : Controller
     {
+        UserController UserController = new UserController();
+
         public ActionResult Index()
         {
-            return View();
+            return View(UserController.GetExtendedUsers());
+        }
+
+        public ActionResult Delete(Guid id)
+        {
+            UserController.RemoveUser(id);
+            return RedirectToAction("Index");
         }
     }
 }

@@ -33,7 +33,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         protected Guid ConnectionId {
             get
             {
-                if (Request.Headers.Authorization == null) return Guid.Empty;
+                if (Request == null || Request.Headers.Authorization == null) return Guid.Empty;
                 return new Guid(Request.Headers.Authorization.ToString()); 
             } 
         }
