@@ -22,10 +22,34 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
     public class AdminController : Controller
     {
         UserController UserController = new UserController();
+        ActivityController ActivityController = new ActivityController();
+        DeviceController DeviceController = new DeviceController();
+        FriendController FriendController = new FriendController();
+
+        public ActionResult Users()
+        {
+            return View(UserController.GetExtendedUsers());
+        }
 
         public ActionResult Index()
         {
-            return View(UserController.GetExtendedUsers());
+            return View();
+        }
+
+        public ActionResult ClearAll()
+        {
+            UserController.Clear();
+            FriendController.Clear();
+            ActivityController.Clear();
+            DeviceController.Clear();
+            return View();
+        }
+
+        public ActionResult ClearAllKeepUsers()
+        {
+            ActivityController.Clear();
+            DeviceController.Clear();
+            return View();
         }
 
         public ActionResult Delete(Guid id)

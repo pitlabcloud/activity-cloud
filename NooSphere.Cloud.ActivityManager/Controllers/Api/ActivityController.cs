@@ -155,6 +155,15 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         [NonAction]
+        public void Clear()
+        {
+            foreach (Activity activity in ActivityRegistry.Get())
+            {
+                RemoveActivity(NotificationType.ActivityDeleted, activity.Id);
+            }
+        }
+
+        [NonAction]
         public bool AddActivity(NotificationType type, JObject data, bool asHistory = false)
         {
             Activity activity = data.ToObject<Activity>();
@@ -191,9 +200,12 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             if (ActivityRegistry.Remove(activityId))
             {
                 ActivityStorage.Remove(activityId);
-                foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
-                    Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDelete, resource);
-                Notifier.NotifyAll(NotificationType.ActivityDeleted, new { Id = activityId });
+                if (CurrentUserId != Guid.Empty)
+                {
+                    foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
+                        Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDelete, resource);
+                    Notifier.NotifyAll(NotificationType.ActivityDeleted, new { Id = activityId });
+                }
                 return true;
             }
             return false;

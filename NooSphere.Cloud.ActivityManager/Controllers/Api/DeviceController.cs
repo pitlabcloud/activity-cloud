@@ -14,6 +14,7 @@
 
 using System;
 using System.Configuration;
+using System.Web.Http;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.ActivityManager.Events;
 using NooSphere.Cloud.Data.Registry;
@@ -67,6 +68,17 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 return true;
             }
             return false;
+        }
+        #endregion
+
+        #region Public Methods
+        [NonAction]
+        public void Clear()
+        {
+            foreach (Device device in DeviceRegistry.Get())
+            {
+                DeviceRegistry.Remove(device.Id);
+            }
         }
         #endregion
     }

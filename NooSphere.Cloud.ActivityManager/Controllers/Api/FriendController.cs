@@ -121,6 +121,16 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
         #endregion
 
+        #region Public Methods
+        public void Clear()
+        {
+            foreach (FriendRequest fr in FriendRequestRegistry.Get())
+            {
+                FriendRequestRegistry.Remove(fr.Id);
+            }
+        }
+        #endregion
+
         #region Private Methods
         private void CreateFriendship(Guid userId, Guid friendId)
         {
