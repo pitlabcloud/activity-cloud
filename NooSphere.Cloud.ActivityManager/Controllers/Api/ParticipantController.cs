@@ -27,15 +27,13 @@ using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
 
-namespace NooSphere.Cloud.ActivityManager.Controllers
+namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class ParticipantController : BaseController
     {
         #region Private Members
         private ActivityController ActivityController = new ActivityController();
-        private ActivityRegistry ActivityRegistry = new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
-        private UserStorage UserStorage = new UserStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
-        private ActivityStorage ActivityStorage = new ActivityStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
+        private UserController UserController = new UserController();
         #endregion
 
         #region Exposed API Methods
@@ -50,8 +48,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         {
             if (activityId != null && participantId != null)
             {
-                JObject activity = ActivityStorage.Get(activityId);
-                JObject participant = UserStorage.Get(participantId);
+                JObject activity = ActivityController.GetExtendedActivity(activityId);
+                JObject participant = UserController.GetExtendedUser(participantId);
                 
                 List<JObject> participants = activity["Participants"].Children<JObject>().ToList();
                 participants.Add(participant);
@@ -76,19 +74,19 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         {
             if (activityId != null && participantId != null)
             {
-                Activity activity = ActivityRegistry.Get(activityId);
-                JObject participant = UserStorage.Get(participantId);
+                Activity activity = ActivityController.GetActivity(activityId);
+                JObject participant = UserController.GetExtendedUser(participantId);
                 List<User> participants = activity.Participants.Where(u => u.Id != participantId).ToList();
 
                 List<JObject> result = new List<JObject>();
                 foreach (User p in participants)
-                    result.Add(UserStorage.Get(p.Id));
+                    result.Add(UserController.GetExtendedUser(p.Id));
 
-                JObject completeActivity = ActivityStorage.Get(activityId);
+                JObject completeActivity = ActivityController.GetExtendedActivity(activityId);
                 completeActivity["Participants"] = JToken.FromObject(result);
 
                 ActivityController.UpdateActivity(Events.NotificationType.None, completeActivity);
-                Notifier.NotifyGroup(activityId, NotificationType.ParticipantRemoved, new { ActivityId = activityId, Participant = participant });
+                Notifier.NotifyGroup(activityId, NotificationType.ParticipantRemoved, new { ActivityId = activityId, ParticipantId = participantId });
                 Notifier.NotifyGroup(participantId, NotificationType.ActivityDeleted, new { Id = activity.Id } );
 
                 return true;

@@ -161,21 +161,24 @@
     <Compile Include="App_Start\MongoConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Authentication\RequireUserAttribute.cs" />
-    <Compile Include="Controllers\ActionController.cs" />
-    <Compile Include="Controllers\ActivityController.cs" />
-    <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\DeviceController.cs" />
-    <Compile Include="Controllers\FileController.cs" />
-    <Compile Include="Controllers\FriendController.cs" />
+    <Compile Include="Controllers\Api\ActionController.cs" />
+    <Compile Include="Controllers\Api\ActivityController.cs" />
+    <Compile Include="Controllers\Api\UserStatusController.cs" />
+    <Compile Include="Controllers\Api\BaseController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\Api\DeviceController.cs" />
+    <Compile Include="Controllers\Api\FileController.cs" />
+    <Compile Include="Controllers\Api\FriendController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ParticipantController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\Api\ParticipantController.cs" />
+    <Compile Include="Controllers\Api\UserController.cs" />
     <Compile Include="Documentation\XmlCommentDocumentationProvider.cs" />
     <Compile Include="Events\EventDispatcher.cs" />
     <Compile Include="Events\Notifier.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ActivityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Sensitive.config">
       <SubType>Designer</SubType>
@@ -251,6 +254,8 @@
     <Content Include="Views\Shared\Features.cshtml" />
     <Content Include="Views\Home\Events.cshtml" />
     <Content Include="Views\Home\Model.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Home\FormattedJson.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\themes\base\jquery.ui.accordion.css" />

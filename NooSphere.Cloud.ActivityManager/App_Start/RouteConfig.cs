@@ -68,6 +68,13 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
                 defaults: new { controller = "User", userId = RouteParameter.Optional }
             );
 
+            // REST Api routing (UserStatus)
+            routes.MapHttpRoute(
+                name: "Api.Users.Status",
+                routeTemplate: "Api/Users/{userId}/Status/{status}",
+                defaults: new { controller = "UserStatus" }
+            );
+
             // REST Api routing (Friends)
             routes.MapHttpRoute(
                 name: "Api.Friends",

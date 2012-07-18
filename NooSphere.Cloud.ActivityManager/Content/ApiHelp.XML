@@ -4,53 +4,61 @@
         <name>NooSphere.Cloud.ActivityManager</name>
     </assembly>
     <members>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ActivityController.Get">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.ActivityController.Get">
             <summary>
             Get a complete list of activities.
             </summary>
             <returns>Json representation of the list of activities.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ActivityController.Get(System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.ActivityController.Get(System.Guid)">
             <summary>
             Get the activity that matches the required activity Id.
             </summary>
             <param name="activityId">Guid representation of the activity Id.</param>
             <returns>Json representation of the activity.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ActivityController.Post(Newtonsoft.Json.Linq.JObject)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.ActivityController.Post(Newtonsoft.Json.Linq.JObject)">
             <summary>
             Create an activity in Activity Cloud.
             </summary>
             <param name="data">Json representation of the activity.</param>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ActivityController.Put(System.Guid,Newtonsoft.Json.Linq.JObject)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.ActivityController.Put(System.Guid,Newtonsoft.Json.Linq.JObject)">
             <summary>
             Update activity in Activity Cloud.
             </summary>
             <param name="activityId">Guid representation of the activity Id.</param>
             <param name="data">Json representation of the activity.</param>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ActivityController.Delete(System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.ActivityController.Delete(System.Guid)">
             <summary>
             Delete activity from Activity Cloud.
             </summary>
             <param name="activityId">Guid representation of the activity Id.</param>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.DeviceController.Post(System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.UserStatusController.Post(System.Guid,System.String)">
+            <summary>
+            Update status of the specific user.
+            </summary>
+            <param name="userId">Guid representation of the user Id.</param>
+            <param name="status">String representation of the status.</param>
+            <returns>Returns true if status was updated, false if not.</returns>
+        </member>
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.DeviceController.Post(System.Guid)">
             <summary>
             Register the device and pair it with the specified user.
             </summary>
             <param name="userId">Guid representation of a userId</param>
             <returns>Returns true if device was registered to the user, false if user doesn't exist or device is already registered.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.DeviceController.Delete(System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.DeviceController.Delete(System.Guid)">
             <summary>
             Unregister the device and remove the pairing with the specified user.
             </summary>
             <param name="userId">Guid representation of a userId.</param>
             <returns>Returns true if device was unregistered, false if device is not registered to user.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FileController.Get(System.Guid,System.Guid,System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FileController.Get(System.Guid,System.Guid,System.Guid)">
             <summary>
             Download the resource.
             </summary>
@@ -59,7 +67,7 @@
             <param name="resourceId">Guid representation of the resource Id.</param>
             <returns>byte[] of the given resource</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FileController.Post(System.Guid,System.Guid,System.Guid,System.Int32,System.String,System.String,System.String,System.Byte[])">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FileController.Post(System.Guid,System.Guid,System.Guid,System.Int32,System.String,System.String,System.String,System.Byte[])">
             <summary>
             Upload the resource
             </summary>
@@ -72,13 +80,13 @@
             <param name="relativePath">Relative path including the filename.</param>
             <param name="data">The resource as a byte[].</param>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FriendController.Get(System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FriendController.Get(System.Guid)">
             <summary>
             Get a complete list of friends for the specific user.
             </summary>
             <returns>Json representation of the list of friends.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FriendController.Post(System.Guid,System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FriendController.Post(System.Guid,System.Guid)">
             <summary>
             Make a friend request.
             </summary>
@@ -86,7 +94,7 @@
             <param name="friendId">Guid representation of the friend Id.</param>
             <returns>Returns true if the friend request was performed, false if not.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FriendController.Post(System.Guid,System.Guid,System.Boolean)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FriendController.Post(System.Guid,System.Guid,System.Boolean)">
             <summary>
             Respond to friend request.
             </summary>
@@ -95,7 +103,7 @@
             <param name="approve">Boolean; true to accept, false to decline.</param>
             <returns>Returns true if response is processed, false if not.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.FriendController.Delete(System.Guid,System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FriendController.Delete(System.Guid,System.Guid)">
             <summary>
             Delete a friend connection.
             </summary>
@@ -103,7 +111,7 @@
             <param name="friendId">Guid representation of the friend Id.</param>
             <returns>Returns true if the friend connection was deleted, false if not.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ParticipantController.Post(System.Guid,System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.ParticipantController.Post(System.Guid,System.Guid)">
             <summary>
             Add participant to the specified activity.
             </summary>
@@ -111,7 +119,7 @@
             <param name="participantId">Guid representation of the user Id.</param>
             <returns>Returns true if participant was added, false if not.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.ParticipantController.Delete(System.Guid,System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.ParticipantController.Delete(System.Guid,System.Guid)">
             <summary>
             Remove a participant from the specified activity.
             </summary>
@@ -119,34 +127,34 @@
             <param name="participantId">Guid representation of the user Id.</param>
             <returns>Returns true if participant was removed, false if not.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Get">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.UserController.Get">
             <summary>
             Get a complete list of users.
             </summary>
             <returns>Json representation of the list of users.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Get(System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.UserController.Get(System.Guid)">
             <summary>
             Get the user that matches the required user Id.
             </summary>
             <param name="userId">Guid representation of the user Id.</param>
             <returns>Json representation of the user.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Get(System.String)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.UserController.Get(System.String)">
             <summary>
             Get the user that matches the required email.
             </summary>
             <param name="email">Email of the specific user.</param>
             <returns>Json representation of the user.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Post(Newtonsoft.Json.Linq.JObject)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.UserController.Post(Newtonsoft.Json.Linq.JObject)">
             <summary>
             Create user in Activity Cloud
             </summary>
             <param name="data">Json representation of the user.</param>
             <returns>Returns true if user is added, false if user already exists.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Put(System.Guid,Newtonsoft.Json.Linq.JObject)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.UserController.Put(System.Guid,Newtonsoft.Json.Linq.JObject)">
             <summary>
             Update user in Activity Cloud.
             </summary>
@@ -154,7 +162,7 @@
             <param name="data">Json representation of the user.</param>
             <returns>Returns true if user is updated, false if not.</returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.UserController.Delete(System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.UserController.Delete(System.Guid)">
             <summary>
             Delete user in Activity Cloud.
             </summary>

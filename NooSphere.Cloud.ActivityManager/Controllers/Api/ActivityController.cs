@@ -25,7 +25,7 @@ using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
 
-namespace NooSphere.Cloud.ActivityManager.Controllers
+namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class ActivityController : BaseController
     {
@@ -90,6 +90,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                     data["Participants"] = JToken.FromObject(new List<User>() { CurrentUser });
                 }
 
+                Notifier.Subscribe(CurrentUserId, activity.Id);
                 AddActivity(NotificationType.ActivityAdded, data);
             }
         }
@@ -141,6 +142,18 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         #endregion
 
         #region Public Methods
+        [NonAction]
+        public JObject GetExtendedActivity(Guid activityId)
+        {
+            return ActivityStorage.Get(activityId);
+        }
+
+        [NonAction]
+        public Activity GetActivity(Guid activityId)
+        {
+            return ActivityRegistry.Get(activityId);
+        }
+
         [NonAction]
         public bool AddActivity(NotificationType type, JObject data, bool asHistory = false)
         {

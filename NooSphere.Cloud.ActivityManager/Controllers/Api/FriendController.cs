@@ -26,13 +26,12 @@ using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
 
-namespace NooSphere.Cloud.ActivityManager.Controllers
+namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class FriendController : BaseController
     {
         #region Private Members
         private UserController UserController = new UserController();
-        private UserStorage UserStorage = new UserStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
         private FriendRequestRegistry FriendRequestRegistry = new FriendRequestRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
         #endregion
 
@@ -125,8 +124,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         #region Private Methods
         private void CreateFriendship(Guid userId, Guid friendId)
         {
-            JObject user = UserStorage.Get(userId);
-            JObject friend = UserStorage.Get(friendId);
+            JObject user = UserController.GetExtendedUser(userId);
+            JObject friend = UserController.GetExtendedUser(friendId);
 
             List<JObject> friends;
             if (user["Friends"] != null)
@@ -144,14 +143,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
 
         private void DestroyFriendship(Guid userId, Guid friendId)
         {
-            JObject user = UserStorage.Get(userId);
-            JObject friend = UserStorage.Get(friendId);
+            JObject user = UserController.GetExtendedUser(userId);
+            JObject friend = UserController.GetExtendedUser(friendId);
 
             List<User> friends = UserRegistry.Get(userId).Friends.Where(u => u.Id != friendId).ToList();
 
             List<JObject> result = new List<JObject>();
             foreach (User f in friends)
-                result.Add(UserStorage.Get(f.Id));
+                result.Add(UserController.GetExtendedUser(f.Id));
 
             user["Friends"] = JToken.FromObject(result);
 
