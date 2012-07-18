@@ -37,8 +37,7 @@ namespace NooSphere.Cloud.ActivityManager.Events
         protected override Task OnConnectedAsync(IRequest request, string connectionId)
         {
             DeviceRegistry.Add(new Device { Id = Guid.NewGuid(), ConnectionId = new Guid(connectionId) });
-            return null;
-            //return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceConnected, new { ConnectionId = connectionId }));
+            return Connection.Send(connectionId, "Connected");
         }
 
         /// <summary>
@@ -50,8 +49,7 @@ namespace NooSphere.Cloud.ActivityManager.Events
         /// <returns></returns>
         protected override Task OnReconnectedAsync(IRequest request, IEnumerable<string> groups, string connectionId)
         {
-            return null;
-            //return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceReconnected, new { ConnectionId = connectionId }));
+            return Connection.Send(connectionId, "Reconnected");
         }
 
         /// <summary>
@@ -74,8 +72,7 @@ namespace NooSphere.Cloud.ActivityManager.Events
         protected override Task OnDisconnectAsync(string connectionId)
         {
             DeviceRegistry.RemoveOnConnectionId(new Guid(connectionId));
-            return null;
-            //return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.DeviceDisconnected, new { ConnectionId = connectionId }));
+            return Connection.Send(connectionId, "Disconnected");
         }
 
         /// <summary>

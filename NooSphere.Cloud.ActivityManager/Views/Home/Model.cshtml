@@ -1,37 +1,63 @@
-﻿<section class="content-wrapper main-content clear-fix">
+﻿@{
+    ViewBag.Title = "Extend the Activity Model";
+
+    NooSphere.Core.ActivityModel.User u = new NooSphere.Core.ActivityModel.User();
+    u.Name = "My Name";
+    u.Email = "my@email.com";
+    u.Id = Guid.NewGuid();
+    NooSphere.Core.ActivityModel.User u2 = new NooSphere.Core.ActivityModel.User();
+    u2.Name = "Friends Name";
+    u2.Email = "friend@email.com";
+    u2.Id = Guid.NewGuid();
+    u.Friends.Add(u2);
+
+    NooSphere.Core.ActivityModel.Activity act = new NooSphere.Core.ActivityModel.Activity();
+    act.Name = "My activity";
+    act.Id = Guid.NewGuid();
+    act.Owner = u;
+
+    NooSphere.Core.ActivityModel.Action a = new NooSphere.Core.ActivityModel.Action();
+    a.Name = "My action";
+    a.Id = Guid.NewGuid();
+
+    NooSphere.Core.ActivityModel.Resource r = new NooSphere.Core.ActivityModel.Resource();
+    r.Name = "My resource";
+    r.Id = Guid.NewGuid();
+    r.ActionId = a.Id;
+    r.ActivityId = act.Id;
+    r.Size = 34325;
+    r.CreationTime = DateTime.UtcNow.ToString("u");
+    r.LastWriteTime = DateTime.UtcNow.ToString("u");
+}
+<section class="content-wrapper main-content clear-fix">
     <h3>Extend the Activity Model</h3>
     <hgroup>
-    The activity model is really simple and can be extended to include the properties that fits your system. The following are the base classes, that are used in Activity Cloud:
+    <p>
+        The activity model is really simple and can be extended to include the properties that fits your system. The following are the base classes, that are used in Activity Cloud.
+    </p>
+    <p>Action example in JSON:</p>
     <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
-        <code style="font-weight: bold;">
-            public class Action {<br />
-            &nbsp;&nbsp;public Guid Id { get; set; }<br />
-            &nbsp;&nbsp;public string Name { get; set; }<br />
-            &nbsp;&nbsp;public List@("<")Resource> Resources { get; set; }<br />
-            }<br />
-            public class Activity {<br />
-            &nbsp;&nbsp;public Guid Id { get; set; }<br />
-            &nbsp;&nbsp;public string Name { get; set; }<br />
-            &nbsp;&nbsp;public List@("<")Action> Actions { get; set; }<br />
-            &nbsp;&nbsp;public List@("<")User> Participants { get; set; }<br />
-            &nbsp;&nbsp;public User Owner { get; set; }<br />
-            }<br />
-            public class Resource {<br />
-            &nbsp;&nbsp;public Guid Id { get; set; }<br />
-            &nbsp;&nbsp;public Guid ActivityId { get; set; }<br />
-            &nbsp;&nbsp;public Guid ActionId { get; set; }<br />
-            &nbsp;&nbsp;public string RelativePath { get; set; }<br />
-            &nbsp;&nbsp;public int Size { get; set; }<br />
-            &nbsp;&nbsp;public string CreationTime { get; set; }<br />
-            &nbsp;&nbsp;public string LastWriteTime { get; set; }<br />
-            }<br />
-            public class User {<br />
-            &nbsp;&nbsp;public Guid Id { get; set; }<br />
-            &nbsp;&nbsp;public string Name { get; set; }<br />
-            &nbsp;&nbsp;public string Email { get; set; }<br />
-            &nbsp;&nbsp;public List@("<")User> Friends { get; set; }<br />
-            }<br />
-        </code>
+    <code style="font-weight: bold;">
+        @Html.Partial("FormattedJson", a)
+    </code>
+    </p>
+    <p>Activity example in JSON:</p>
+    <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
+    <code style="font-weight: bold;">
+        @Html.Partial("FormattedJson", act)
+    </code>
+    </p>
+    <p>Resource example in JSON:</p>
+    <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
+    <code style="font-weight: bold;">
+        @Html.Partial("FormattedJson", r)
+    </code>
+    </p>
+    <p>User example in JSON:</p>
+    <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
+    <code style="font-weight: bold;">
+        @Html.Partial("FormattedJson", u)
+    </code>
     </p>
     </hgroup>
 </section>

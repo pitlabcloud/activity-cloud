@@ -18,15 +18,12 @@ using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.ActivityManager.Events;
 using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
+using NooSphere.Core.ActivityModel;
 
-namespace NooSphere.Cloud.ActivityManager.Controllers
+namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class DeviceController : BaseController
     {
-        #region Private Members
-        private UserStorage UserStorage = new UserStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
-        #endregion
-
         #region Exposed API Methods
         /// <summary>
         /// Register the device and pair it with the specified user.
@@ -42,8 +39,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
                 if (DeviceRegistry.ConnectUser(ConnectionId, userId))
                 {
                     Notifier.Subscribe(ConnectionId, userId);
+                    foreach (User friend in CurrentUser.Friends)
+                        Notifier.Subscribe(ConnectionId, friend.Id);
+
                     if (DeviceRegistry.ConnectedDevices(CurrentUserId).Count == 1)
-                        Notifier.NotifyGroup(CurrentUserId, NotificationType.UserOnline, UserStorage.Get(userId));
+                        Notifier.NotifyGroup(CurrentUserId, NotificationType.UserConnected, userId);
                     return true;
                 }
             }
@@ -63,7 +63,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             {
                 Notifier.Unsubscribe(ConnectionId, userId);
                 if (DeviceRegistry.ConnectedDevices(CurrentUserId).Count == 0)
-                    Notifier.NotifyGroup(CurrentUserId, NotificationType.UserOffline, UserStorage.Get(userId));
+                    Notifier.NotifyGroup(CurrentUserId, NotificationType.UserDisconnected, userId);
                 return true;
             }
             return false;

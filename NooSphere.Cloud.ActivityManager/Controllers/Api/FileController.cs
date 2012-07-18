@@ -17,7 +17,7 @@ using System.Configuration;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.Data.Storage;
 
-namespace NooSphere.Cloud.ActivityManager.Controllers
+namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class FileController : BaseController
     {

@@ -24,7 +24,7 @@ using NooSphere.Cloud.ActivityManager.Events;
 using NooSphere.Cloud.Data.Registry;
 using NooSphere.Core.ActivityModel;
 
-namespace NooSphere.Cloud.ActivityManager.Controllers
+namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     [ApiExplorerSettings(IgnoreApi = true)]
     public class ActionController : BaseController
