@@ -1,17 +1,22 @@
-﻿@{
+﻿@model IEnumerable<Newtonsoft.Json.Linq.JObject>
+@{
     ViewBag.Title = "Admin page";
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title></title>
-</head>
-<body>
-    <div>
-    
-    </div>
-</body>
-</html>
+<section class="content-wrapper main-content clear-fix">
+    <table>
+        <tr>
+            <td style="width: 220px;"><b>Name</b></td>
+            <td style="width: 220px;"><b>Email</b></td>
+            <td></td>
+            <td></td>
+        </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item["Name"]</td>
+            <td>@item["Email"]</td>
+            <td>@Html.ActionLink("Delete", "Delete", new { id = item["Id"].ToObject<Guid>() })</td>
+        </tr>
+    }
+    </table>
+</section>

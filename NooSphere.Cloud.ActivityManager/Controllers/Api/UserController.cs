@@ -127,6 +127,12 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 
         #region Public Methods
         [NonAction]
+        public List<JObject> GetExtendedUsers()
+        {
+            return UserStorage.Get();
+        }
+
+        [NonAction]
         public JObject GetExtendedUser(Guid userId)
         {
             return UserStorage.Get(userId);
@@ -167,7 +173,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         {
             if (UserRegistry.Remove(userId))
             {
-                if (CurrentUser.Id == userId)
+                if (CurrentUser != null && CurrentUser.Id == userId)
                     DeviceRegistry.DisconnectUser(userId);
 
                 UserStorage.Remove(userId);
