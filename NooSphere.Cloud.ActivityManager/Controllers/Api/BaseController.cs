@@ -20,7 +20,7 @@ using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
 
-namespace NooSphere.Cloud.ActivityManager.Controllers
+namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class BaseController : ApiController
     {

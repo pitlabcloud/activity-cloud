@@ -19,6 +19,7 @@ namespace NooSphere.Core.ActivityModel
     {
         #region Properties
         public string Email { get; set; }
+        public string Status { get; set; }
         public List<User> Friends { get; set; }
         #endregion
 

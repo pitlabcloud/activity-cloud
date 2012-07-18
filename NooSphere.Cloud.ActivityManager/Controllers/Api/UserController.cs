@@ -25,7 +25,7 @@ using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
 
-namespace NooSphere.Cloud.ActivityManager.Controllers
+namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     [ApiExplorerSettings(IgnoreApi = true)]
     public class UserController : BaseController
@@ -126,6 +126,18 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         #endregion
 
         #region Public Methods
+        [NonAction]
+        public JObject GetExtendedUser(Guid userId)
+        {
+            return UserStorage.Get(userId);
+        }
+
+        [NonAction]
+        public User GetUser(Guid userId)
+        {
+            return UserRegistry.Get(userId);
+        }
+
         [NonAction]
         public bool AddUser(JObject data)
         {

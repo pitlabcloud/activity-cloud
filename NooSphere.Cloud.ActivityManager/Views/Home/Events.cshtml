@@ -1,99 +1,104 @@
+@{
+    ViewBag.Title = "Handling events from Activity Cloud";
+}
     <section class="content-wrapper main-content clear-fix">
-            <h3>Handling events from Activity Cloud:</h3>
+            <h3>Handling events from Activity Cloud</h3>
             <hgroup>
                 <p>When connected to Activity Cloud relevant events are fired to the connected client. The events are send as JSON constructed by two fields: a field descriping the type of event and
                 a second field with the serialized object relevant for the event.</p>
             </hgroup>
             <hgroup>
             The following illustrates the events to be handled on each client:
-                <ul>
-                @foreach (NooSphere.Cloud.ActivityManager.Events.NotificationType notificationType in Enum.GetValues(typeof(NooSphere.Cloud.ActivityManager.Events.NotificationType)))
+            <br />
+            @foreach (NooSphere.Cloud.ActivityManager.Events.NotificationType notificationType in Enum.GetValues(typeof(NooSphere.Cloud.ActivityManager.Events.NotificationType)))
+            {
+                if (!notificationType.ToString().Contains("Action") && !notificationType.ToString().Contains("None"))
                 {
-                    if (!notificationType.ToString().Contains("Action") && !notificationType.ToString().Contains("Device")
-                        && !notificationType.ToString().Contains("User") && !notificationType.ToString().Contains("None")
-                        && !notificationType.ToString().Contains("Resource"))
-                    {
-                        <li>
-                            <b>@notificationType.ToString()</b><br />
-                            <code>
-                                {<br />
-                                &nbsp;&nbsp;"Event" : "@notificationType.ToString()",<br />
-                                &nbsp;&nbsp;"Data" :
-                                @{
-                                    Newtonsoft.Json.Linq.JObject obj;
-                                    NooSphere.Core.ActivityModel.Activity a;
-                                    NooSphere.Core.ActivityModel.Resource r;
-                                    NooSphere.Core.ActivityModel.User u;
-                                    switch (notificationType)
-                                    {
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityAdded:
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityUpdated:
-                                            a = new NooSphere.Core.ActivityModel.Activity();
-                                            u = new NooSphere.Core.ActivityModel.User();
-                                            u.Id = Guid.NewGuid();
-                                            u.Email = "my@email.com";
-                                            u.Name = "My Name";
-                                            a.Id = Guid.NewGuid();
-                                            a.Name = "My activity";
-                                            a.Owner = u;
-                                            obj = Newtonsoft.Json.Linq.JObject.FromObject(a);
-                                            obj.Remove("History");
-                                            obj.Remove("IsHistory");
-                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
-                                            break;
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityDeleted:
-                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(new { Id = Guid.NewGuid() }));
-                                            break;
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileDownload:
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileUpload:
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileDelete:
-                                            r = new NooSphere.Core.ActivityModel.Resource();
-                                            r.ActionId = Guid.NewGuid();
-                                            r.ActivityId = Guid.NewGuid();
-                                            r.Id = Guid.NewGuid();
-                                            r.Name = "My document";
-                                            r.Size = 7234;
-                                            r.CreationTime = DateTime.UtcNow.ToString("u");
-                                            r.LastWriteTime = DateTime.UtcNow.ToString("u");
-                                            r.RelativePath = "document.pdf";
-                                            obj = Newtonsoft.Json.Linq.JObject.FromObject(r);
-                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
-                                            break;
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.Message:
-                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject("Hi, this is my message."));
-                                            break;
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.ParticipantAdded:
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.ParticipantRemoved:
-                                            u = new NooSphere.Core.ActivityModel.User();
-                                            u.Id = Guid.NewGuid();
-                                            u.Email = "my@email.com";
-                                            u.Name = "My Name";
-                                            obj = Newtonsoft.Json.Linq.JObject.FromObject(u);
-                                            obj.Remove("Friends");
-                                            Newtonsoft.Json.Linq.JObject data = Newtonsoft.Json.Linq.JObject.FromObject(new { ActivityId = Guid.NewGuid(), Participant = obj });
-                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(data));
-                                            break;
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendAdded:
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendRequest:
-                                            u = new NooSphere.Core.ActivityModel.User();
-                                            u.Id = Guid.NewGuid();
-                                            u.Email = "my-friend@email.com";
-                                            u.Name = "My Friends name";
-                                            obj = Newtonsoft.Json.Linq.JObject.FromObject(u);
-                                            obj.Remove("Friends");
-                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
-                                            break;
-                                        case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendDeleted:
-                                            @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Guid.NewGuid()));
-                                            break;
-                                    }
+                        <h5>@notificationType.ToString():</h5><br />
+                        <p style="background: #fff; padding: 5px; width: 90%; margin: auto auto;">
+                        <code>
+                            @{
+                                Newtonsoft.Json.Linq.JObject obj;
+                                NooSphere.Core.ActivityModel.Activity a;
+                                NooSphere.Core.ActivityModel.Resource r;
+                                NooSphere.Core.ActivityModel.User u;
+                                switch (notificationType)
+                                {
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityAdded:
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityUpdated:
+                                        a = new NooSphere.Core.ActivityModel.Activity();
+                                        u = new NooSphere.Core.ActivityModel.User();
+                                        u.Id = Guid.NewGuid();
+                                        u.Email = "my@email.com";
+                                        u.Name = "My Name";
+                                        a.Id = Guid.NewGuid();
+                                        a.Name = "My activity";
+                                        a.Owner = u;
+                                        obj = Newtonsoft.Json.Linq.JObject.FromObject(a);
+                                        obj.Remove("History");
+                                        obj.Remove("IsHistory");
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = obj })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityDeleted:
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = Guid.NewGuid() })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileDownload:
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileUpload:
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileDelete:
+                                        r = new NooSphere.Core.ActivityModel.Resource();
+                                        r.ActionId = Guid.NewGuid();
+                                        r.ActivityId = Guid.NewGuid();
+                                        r.Id = Guid.NewGuid();
+                                        r.Name = "My document";
+                                        r.Size = 7234;
+                                        r.CreationTime = DateTime.UtcNow.ToString("u");
+                                        r.LastWriteTime = DateTime.UtcNow.ToString("u");
+                                        r.RelativePath = "document.pdf";
+                                        obj = Newtonsoft.Json.Linq.JObject.FromObject(r);
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = obj })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.Message:
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = "Hi, this is my message." })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ParticipantAdded:
+                                        u = new NooSphere.Core.ActivityModel.User();
+                                        u.Id = Guid.NewGuid();
+                                        u.Email = "my@email.com";
+                                        u.Name = "My Name";
+                                        obj = Newtonsoft.Json.Linq.JObject.FromObject(u);
+                                        obj.Remove("Friends");
+                                        Newtonsoft.Json.Linq.JObject data = Newtonsoft.Json.Linq.JObject.FromObject(new { ActivityId = Guid.NewGuid(), Participant = obj });
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = data })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ParticipantRemoved:
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = new { ActivityId = Guid.NewGuid(), ParticipantId = Guid.NewGuid() } })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendAdded:
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendRequest:
+                                        u = new NooSphere.Core.ActivityModel.User();
+                                        u.Id = Guid.NewGuid();
+                                        u.Email = "my-friend@email.com";
+                                        u.Status = "Doing good...";
+                                        u.Name = "My Friends name";
+                                        obj = Newtonsoft.Json.Linq.JObject.FromObject(u);
+                                        obj.Remove("Friends");
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = obj })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendDeleted:
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = Guid.NewGuid() })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.UserConnected:
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.UserDisconnected:
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = Guid.NewGuid() })
+                                        break;
+                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.UserStatusChanged:
+                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = new { UserId = Guid.NewGuid(), Status = "I'm eating cake." } })
+                                        break;
                                 }
-                                <br />
-                                }
-                            </code><br /><br />
-                        </li>
+                            }
+                        </code>
+                        </p>
                     }
                 }
-                </ul>
             </hgroup>
       </section>
