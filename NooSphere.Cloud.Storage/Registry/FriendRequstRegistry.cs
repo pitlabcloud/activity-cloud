@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using NooSphere.Core.ActivityModel;
 
 namespace NooSphere.Cloud.Data.Registry
 {
@@ -18,9 +19,21 @@ namespace NooSphere.Cloud.Data.Registry
         {
             return base.Add(Collection, obj);
         }
+        public List<FriendRequest> Get()
+        {
+            return base.Get(Collection).Cast<FriendRequest>().ToList();
+        }
+        public List<FriendRequest> Get(Guid userId)
+        {
+            return Collection.FindAs<FriendRequest>(Query.EQ("FriendId", userId)).ToList();
+        }
         public bool Remove(Guid userId, Guid friendId)
         {
             return Collection.Remove(Query.And(Query.EQ("UserId", userId), Query.EQ("FriendId", friendId)), SafeMode.True).Ok;
+        }
+        public bool Remove(Guid friendRequestId)
+        {
+            return Collection.Remove(Query.EQ("_id", friendRequestId), SafeMode.True).Ok;
         }
         #endregion
 
