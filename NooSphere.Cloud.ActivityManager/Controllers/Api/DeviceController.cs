@@ -43,6 +43,9 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                     foreach (User friend in CurrentUser.Friends)
                         Notifier.Subscribe(ConnectionId, friend.Id);
 
+                    foreach (FriendRequest fr in new FriendController().GetFriendRequests(userId))
+                        Notifier.NotifyGroup(userId, NotificationType.FriendRequest, fr.UserId);
+
                     if (DeviceRegistry.ConnectedDevices(CurrentUserId).Count == 1)
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.UserConnected, userId);
                     return true;

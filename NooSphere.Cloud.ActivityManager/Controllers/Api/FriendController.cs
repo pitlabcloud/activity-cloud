@@ -122,6 +122,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         #endregion
 
         #region Public Methods
+        public List<FriendRequest> GetFriendRequests(Guid userId)
+        {
+            return FriendRequestRegistry.Get(userId);
+        }
+
         public void Clear()
         {
             foreach (FriendRequest fr in FriendRequestRegistry.Get())
