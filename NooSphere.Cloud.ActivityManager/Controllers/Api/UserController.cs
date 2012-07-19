@@ -139,6 +139,15 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         [NonAction]
+        public void Clear()
+        {
+            foreach (User user in UserRegistry.Get())
+            {
+                RemoveUser(user.Id);
+            }
+        }
+
+        [NonAction]
         public User GetUser(Guid userId)
         {
             return UserRegistry.Get(userId);

@@ -14,6 +14,7 @@
 
 using System;
 using System.Configuration;
+using System.Web.Http;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.ActivityManager.Events;
 using NooSphere.Cloud.Data.Registry;
@@ -42,6 +43,9 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                     foreach (User friend in CurrentUser.Friends)
                         Notifier.Subscribe(ConnectionId, friend.Id);
 
+                    foreach (FriendRequest fr in new FriendController().GetFriendRequests(userId))
+                        Notifier.NotifyGroup(userId, NotificationType.FriendRequest, fr.UserId);
+
                     if (DeviceRegistry.ConnectedDevices(CurrentUserId).Count == 1)
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.UserConnected, userId);
                     return true;
@@ -67,6 +71,17 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 return true;
             }
             return false;
+        }
+        #endregion
+
+        #region Public Methods
+        [NonAction]
+        public void Clear()
+        {
+            foreach (Device device in DeviceRegistry.Get())
+            {
+                DeviceRegistry.Remove(device.Id);
+            }
         }
         #endregion
     }
