@@ -87,7 +87,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                     if (data["Id"] == null && !data["Id"].HasValues)
                         data["Id"] = Guid.NewGuid().ToString();
 
-                    AddUser(data);
+                    return AddUser(data);
                 }
             }
             return false;
@@ -103,9 +103,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         public bool Put(Guid userId, JObject data)
         {
             if (data != null && IsFormatOk(data))
-            {
-                AddUser(data);
-            }
+                return AddUser(data);
+
             return false;
         }
 
@@ -119,7 +118,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         {
             if (userId != null)
             {
-                RemoveUser(userId);
+                return RemoveUser(userId);
             }
             return false;
         }

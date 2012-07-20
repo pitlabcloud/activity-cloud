@@ -35,6 +35,7 @@ namespace NooSphere.Cloud.Data.Registry
         }
         public bool Remove(Guid userId, Guid friendId)
         {
+            if (!Exists(userId, friendId)) return false;
             return Collection.Remove(Query.And(Query.EQ("UserId", userId), Query.EQ("FriendId", friendId)), SafeMode.True).Ok;
         }
         public bool Remove(Guid friendRequestId)
