@@ -63,6 +63,13 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             if (CurrentUserId == userId)
             {
                 User user = UserRegistry.Get(userId);
+                // User is already a friend
+                if(user.Friends.Exists(f => f.Id == friendId)) return false;
+                // User is already friend requested
+                if (FriendRequestRegistry.Exists(userId, friendId)) return false;
+                // User and friend are alike
+                if (userId == friendId) return false;
+
                 User friend = UserRegistry.Get(friendId);
                 FriendRequest fr = new FriendRequest();
                 fr.UserId = user.Id;
