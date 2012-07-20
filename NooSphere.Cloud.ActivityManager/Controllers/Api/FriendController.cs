@@ -76,7 +76,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 fr.FriendId = friend.Id;
                 if (FriendRequestRegistry.Add(fr))
                 {
-                    Notifier.NotifyGroup(userId, NotificationType.FriendRequest, friend);
+                    Notifier.NotifyGroup(friendId, NotificationType.FriendRequest, user);
                     return true;
                 }
             }
