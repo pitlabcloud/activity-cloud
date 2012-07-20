@@ -90,16 +90,16 @@
             <summary>
             Make a friend request.
             </summary>
-            <param name="userId">Guid representation of the user Id.</param>
-            <param name="friendId">Guid representation of the friend Id.</param>
+            <param name="userId">Guid representation of the current user's user Id.</param>
+            <param name="friendId">Guid representation of the friend's user Id.</param>
             <returns>Returns true if the friend request was performed, false if not.</returns>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FriendController.Post(System.Guid,System.Guid,System.Boolean)">
             <summary>
             Respond to friend request.
             </summary>
-            <param name="userId">Guid representation of the user Id.</param>
-            <param name="friendId">Guid representation of the friend Id.</param>
+            <param name="userId">Guid representation of the current user's user Id.</param>
+            <param name="friendId">Guid representation of the friend's user Id.</param>
             <param name="approve">Boolean; true to accept, false to decline.</param>
             <returns>Returns true if response is processed, false if not.</returns>
         </member>
