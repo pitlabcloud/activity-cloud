@@ -54,8 +54,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         /// <summary>
         /// Make a friend request.
         /// </summary>
-        /// <param name="userId">Guid representation of the user Id.</param>
-        /// <param name="friendId">Guid representation of the friend Id.</param>
+        /// <param name="userId">Guid representation of the requesting user's user Id.</param>
+        /// <param name="friendId">Guid representation of the requested user's user Id.</param>
         /// <returns>Returns true if the friend request was performed, false if not.</returns>
         [RequireUser]
         public bool Post(Guid userId, Guid friendId)
@@ -86,22 +86,25 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         /// <summary>
         /// Respond to friend request.
         /// </summary>
-        /// <param name="userId">Guid representation of the user Id.</param>
-        /// <param name="friendId">Guid representation of the friend Id.</param>
+        /// <param name="userId">Guid representation of the responding user's user Id.</param>
+        /// <param name="friendId">Guid representation of the requesting user's user Id.</param>
         /// <param name="approve">Boolean; true to accept, false to decline.</param>
         /// <returns>Returns true if response is processed, false if not.</returns>
         [RequireUser]
         public bool Post(Guid userId, Guid friendId, bool approve)
         {
-            if (CurrentUserId == friendId)
+            if (CurrentUserId == userId)
             {
-                if (FriendRequestRegistry.Remove(userId, friendId))
+                if (UserRegistry.ExistingId(friendId) && UserRegistry.ExistingId(userId))
                 {
-                    if (approve)
+                    if (FriendRequestRegistry.Remove(friendId, userId))
                     {
-                        CreateFriendship(userId, friendId);
-                        CreateFriendship(friendId, userId);
-                        return true;
+                        if (approve)
+                        {
+                            CreateFriendship(userId, friendId);
+                            CreateFriendship(friendId, userId);
+                            return true;
+                        }
                     }
                 }
             }
