@@ -27,6 +27,12 @@ namespace NooSphere.Cloud.Data.Registry
         {
             return Collection.FindAs<FriendRequest>(Query.EQ("FriendId", userId)).ToList();
         }
+        public bool Exists(Guid userId, Guid friendId)
+        {
+            return Collection.Find(Query.Or(
+                Query.And(Query.EQ("UserId", userId), Query.EQ("FriendId", friendId)),
+                Query.And(Query.EQ("UserId", friendId), Query.EQ("FriendId", userId)))).Count() > 0;
+        }
         public bool Remove(Guid userId, Guid friendId)
         {
             return Collection.Remove(Query.And(Query.EQ("UserId", userId), Query.EQ("FriendId", friendId)), SafeMode.True).Ok;

@@ -42,14 +42,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
             FriendController.Clear();
             ActivityController.Clear();
             DeviceController.Clear();
-            return View();
+            return RedirectToAction("Index");
         }
 
         public ActionResult ClearAllKeepUsers()
         {
             ActivityController.Clear();
             DeviceController.Clear();
-            return View();
+            return RedirectToAction("Index");
         }
 
         public ActionResult Delete(Guid id)
