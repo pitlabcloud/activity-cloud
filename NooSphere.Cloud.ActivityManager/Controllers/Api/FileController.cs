@@ -86,22 +86,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                             RelativePath = relativePath
                         };
 
-            Task<Stream> task = Request.Content.ReadAsStreamAsync();
-            Task<HttpResponseMessage> result = task.ContinueWith(o =>
-                                                                     {
-                                                                         if (FileStorage.Upload(GenerateId(r),
-                                                                                                relativePath,
-                                                                                                DateTime.Parse(
-                                                                                                    creationTime),
-                                                                                                DateTime.Parse(
-                                                                                                    lastWriteTime), size,
-                                                                                                task.Result))
-                                                                             Notifier.NotifyGroup(activityId,
-                                                                                                  NotificationType.
-                                                                                                      FileDownload, r);
-                                                                         return new HttpResponseMessage
-                                                                                    {StatusCode = HttpStatusCode.OK};
-                                                                     });
+            var task = Request.Content.ReadAsStreamAsync();
+            var result = task.ContinueWith(o =>
+            {
+                if (FileStorage.Upload(GenerateId(r), relativePath, DateTime.Parse(creationTime),
+                    DateTime.Parse(lastWriteTime), size, task.Result))
+                    Notifier.NotifyGroup(activityId, NotificationType.FileDownload, r);
+                    return new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
+            });
 
             return result;
         }
