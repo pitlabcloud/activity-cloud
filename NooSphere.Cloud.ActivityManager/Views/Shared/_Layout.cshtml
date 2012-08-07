@@ -1,37 +1,38 @@
+@using System.Web.Optimization
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
-    <link href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/css")" rel="stylesheet" type="text/css" />
-    <link href="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Content/themes/base/css")" rel="stylesheet" type="text/css" />
-    <script src="@System.Web.Optimization.BundleTable.Bundles.ResolveBundleUrl("~/Scripts/js")"></script>
-</head>
-<body>
-    <header>
-        <div class="content-wrapper">       
-            <p class="site-title"><a href="/"> <img src="~/Images/logo.png" /></a></p>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>@ViewBag.Title</title>
+        <link href="@BundleTable.Bundles.ResolveBundleUrl("~/Content/css")" rel="stylesheet" type="text/css" />
+        <link href="@BundleTable.Bundles.ResolveBundleUrl("~/Content/themes/base/css")" rel="stylesheet" type="text/css" />
+        <script src="@BundleTable.Bundles.ResolveBundleUrl("~/Scripts/js")"> </script>
+    </head>
+    <body>
+        <header>
+            <div class="content-wrapper">       
+                <p class="site-title"><a href="/"> <img src="~/Images/logo.png" /></a></p>
+            </div>
+        </header>
+        <div id="body">
+            <section class="featured">
+                <div class="content-wrapper">
+                    <hgroup class="title">
+                        <h1>Activity Cloud API</h1>
+                    </hgroup>
+                    <hgroup>
+                        <h5>Activity Cloud is a cloud-based activity manager. Build in ASP .NET MVC 4, activities are stored in Amazon's S3 cloud. Through events send with SignalR, the client is automatically
+                            notified whenever changes are applied to the activities.</h5>
+                    </hgroup>
+                    <hgroup style="color: #fff;">
+                        <h3>
+                            @Html.ActionLink("Activity Cloud Api", "Index") @Html.ActionLink("How to Connect?", "Connect") @Html.ActionLink("Keep Updated through Events", "Events") @Html.ActionLink("Extend the Activity Model", "Model")
+                        </h3>
+                    </hgroup>
+                </div>
+            </section>
+            @RenderBody()
         </div>
-    </header>
-    <div id="body">
-    <section class="featured">
-        <div class="content-wrapper">
-            <hgroup class="title">
-                <h1>Activity Cloud API</h1>
-            </hgroup>
-            <hgroup>
-                <h5>Activity Cloud is a cloud-based activity manager. Build in ASP .NET MVC 4, activities are stored in Amazon's S3 cloud. Through events send with SignalR, the client is automatically
-                notified whenever changes are applied to the activities.</h5>
-            </hgroup>
-            <hgroup style="color:#fff;">
-                <h3>
-                    @Html.ActionLink("Activity Cloud Api", "Index") @Html.ActionLink("How to Connect?", "Connect") @Html.ActionLink("Keep Updated through Events", "Events") @Html.ActionLink("Extend the Activity Model", "Model")
-                </h3>
-            </hgroup>
-        </div>
-    </section>
-    @RenderBody()
-    </div>
-</body>
+    </body>
 </html>

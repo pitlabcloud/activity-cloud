@@ -1,16 +1,18 @@
-﻿/// <licence>
-/// 
-/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
-/// 
-/// Pervasive Interaction Technology Laboratory (pIT lab)
-/// IT University of Copenhagen
-///
-/// This library is free software; you can redistribute it and/or 
-/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
-/// as published by the Free Software Foundation. Check 
-/// http://www.gnu.org/licenses/gpl.html for details.
-/// 
-/// </licence>
+﻿#region License
+
+// Copyright (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+// 
+// Pervasive Interaction Technology Laboratory (pIT lab)
+// IT University of Copenhagen
+// 
+// This library is free software; you can redistribute it and/or 
+// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+// as published by the Free Software Foundation. Check 
+// http://www.gnu.org/licenses/gpl.html for details.
+
+#endregion
+
+#region
 
 using System;
 using System.Configuration;
@@ -20,21 +22,22 @@ using System.Web.Http.Description;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
-using NooSphere.Cloud.ActivityManager.Events;
 using NooSphere.Cloud.Data.Registry;
 using NooSphere.Core.ActivityModel;
+using Action = NooSphere.Core.ActivityModel.Action;
+
+#endregion
 
 namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     [ApiExplorerSettings(IgnoreApi = true)]
     public class ActionController : BaseController
     {
-        #region Private Members
-        private ActivityRegistry ActivityRegistry = new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
-        private ActionRegistry ActionRegistry = new ActionRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
-        #endregion
+        private readonly ActivityRegistry ActivityRegistry =
+            new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
 
         #region Exposed API Methods
+
         [RequireUser]
         [AcceptVerbs("POST")]
         public void Post(Guid activityId, JObject action)
@@ -42,13 +45,13 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             if (action != null)
             {
                 if (action["Id"] == null && action["Id"].HasValues) action["Id"] = Guid.NewGuid().ToString();
-                NooSphere.Core.ActivityModel.Action obj = JsonConvert.DeserializeObject<NooSphere.Core.ActivityModel.Action>(action.ToString());
-                
-                var activity = ActivityRegistry.Get(activityId);
+                var obj = JsonConvert.DeserializeObject<Action>(action.ToString());
 
-                if (IsParticipant((Activity)activity))
+                Activity activity = ActivityRegistry.Get(activityId);
+
+                if (IsParticipant(activity))
                 {
-                    ((Activity)activity).Actions.Add(obj);
+                    (activity).Actions.Add(obj);
 
                     // Notify subscribers
                     //Notifier.NotifyAll(NotificationType.ActionAdded, action);
@@ -62,11 +65,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         {
             if (action != null)
             {
-                NooSphere.Core.ActivityModel.Action obj = JsonConvert.DeserializeObject<NooSphere.Core.ActivityModel.Action>(action.ToString());
+                var obj = JsonConvert.DeserializeObject<Action>(action.ToString());
                 // Get activity
                 Activity activity = ActivityRegistry.Get(activityId);
 
-                if (IsParticipant((Activity)activity))
+                if (IsParticipant(activity))
                 {
                     Activity oldActivity = activity;
                     // Create new id and add ti activity storage
@@ -88,20 +91,18 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [AcceptVerbs("DELETE")]
         public void Delete(Guid activityId, Guid actionId)
         {
-            if (actionId != null)
+            Activity activity = ActivityRegistry.Get(activityId);
+            if (IsOwner(activity))
             {
-                var activity = ActivityRegistry.Get(activityId);
-                if (IsOwner((Activity)activity))
-                {
-                    // Find correct action
-                    NooSphere.Core.ActivityModel.Action action = ((Activity)activity).Actions.SingleOrDefault(act => act.Id == actionId);
-                    // Remove action in activity
-                    ((Activity)activity).Actions.Remove(action);
-                    // Notify subscribers
-                    //Notifier.NotifyAll(NotificationType.ActionDeleted, action);
-                }
+                // Find correct action
+                Action action = (activity).Actions.SingleOrDefault(act => act.Id == actionId);
+                // Remove action in activity
+                (activity).Actions.Remove(action);
+                // Notify subscribers
+                //Notifier.NotifyAll(NotificationType.ActionDeleted, action);
             }
         }
+
         #endregion
     }
 }

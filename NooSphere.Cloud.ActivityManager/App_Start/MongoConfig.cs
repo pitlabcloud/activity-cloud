@@ -1,9 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿#region License
+
+// Copyright (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+// 
+// Pervasive Interaction Technology Laboratory (pIT lab)
+// IT University of Copenhagen
+// 
+// This library is free software; you can redistribute it and/or 
+// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+// as published by the Free Software Foundation. Check 
+// http://www.gnu.org/licenses/gpl.html for details.
+
+#endregion
+
+#region
+
 using MongoDB.Bson.Serialization;
 using NooSphere.Core.ActivityModel;
+
+#endregion
 
 namespace NooSphere.Cloud.ActivityManager.App_Start
 {
@@ -11,12 +25,12 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
     {
         public static void RegisterMongoMap()
         {
-            BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.Activity>();
-            BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.Action>();
-            BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.Device>();
-            BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.FriendRequest>();
-            BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.Resource>();
-            BsonClassMap.RegisterClassMap<NooSphere.Core.ActivityModel.User>();
+            BsonClassMap.RegisterClassMap<Activity>();
+            BsonClassMap.RegisterClassMap<Action>();
+            BsonClassMap.RegisterClassMap<Device>();
+            BsonClassMap.RegisterClassMap<FriendRequest>();
+            BsonClassMap.RegisterClassMap<Resource>();
+            BsonClassMap.RegisterClassMap<User>();
         }
     }
 }

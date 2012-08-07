@@ -1,104 +1,108 @@
+@using Newtonsoft.Json.Linq
+@using NooSphere.Cloud.ActivityManager.Events
+@using NooSphere.Core.ActivityModel
 @{
     ViewBag.Title = "Handling events from Activity Cloud";
 }
-    <section class="content-wrapper main-content clear-fix">
-            <h3>Handling events from Activity Cloud</h3>
-            <hgroup>
-                <p>When connected to Activity Cloud relevant events are fired to the connected client. The events are send as JSON constructed by two fields: a field descriping the type of event and
-                a second field with the serialized object relevant for the event.</p>
-            </hgroup>
-            <hgroup>
-            The following illustrates the events to be handled on each client:
-            <br />
-            @foreach (NooSphere.Cloud.ActivityManager.Events.NotificationType notificationType in Enum.GetValues(typeof(NooSphere.Cloud.ActivityManager.Events.NotificationType)))
+<section class="content-wrapper main-content clear-fix">
+    <h3>Handling events from Activity Cloud</h3>
+    <hgroup>
+        <p>When connected to Activity Cloud relevant events are fired to the connected client. The events are send as JSON constructed by two fields: a field descriping the type of event and
+            a second field with the serialized object relevant for the event.</p>
+    </hgroup>
+    <hgroup>
+        The following illustrates the events to be handled on each client:
+        <br />
+        @foreach (NotificationType notificationType in Enum.GetValues(typeof (NotificationType)))
+        {
+            if (!notificationType.ToString().Contains("Action") && !notificationType.ToString().Contains("None"))
             {
-                if (!notificationType.ToString().Contains("Action") && !notificationType.ToString().Contains("None"))
-                {
-                        <h5>@notificationType.ToString():</h5><br />
-                        <p style="background: #fff; padding: 5px; width: 90%; margin: auto auto;">
-                        <code>
-                            @{
-                                Newtonsoft.Json.Linq.JObject obj;
-                                NooSphere.Core.ActivityModel.Activity a;
-                                NooSphere.Core.ActivityModel.Resource r;
-                                NooSphere.Core.ActivityModel.User u;
-                                switch (notificationType)
-                                {
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityAdded:
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityUpdated:
-                                        a = new NooSphere.Core.ActivityModel.Activity();
-                                        u = new NooSphere.Core.ActivityModel.User();
-                                        u.Id = Guid.NewGuid();
-                                        u.Email = "my@email.com";
-                                        u.Name = "My Name";
-                                        a.Id = Guid.NewGuid();
-                                        a.Name = "My activity";
-                                        a.Owner = u;
-                                        obj = Newtonsoft.Json.Linq.JObject.FromObject(a);
-                                        obj.Remove("History");
-                                        obj.Remove("IsHistory");
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = obj })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ActivityDeleted:
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = Guid.NewGuid() })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileDownload:
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileUpload:
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FileDelete:
-                                        r = new NooSphere.Core.ActivityModel.Resource();
-                                        r.ActionId = Guid.NewGuid();
-                                        r.ActivityId = Guid.NewGuid();
-                                        r.Id = Guid.NewGuid();
-                                        r.Name = "My document";
-                                        r.Size = 7234;
-                                        r.CreationTime = DateTime.UtcNow.ToString("u");
-                                        r.LastWriteTime = DateTime.UtcNow.ToString("u");
-                                        r.RelativePath = "document.pdf";
-                                        obj = Newtonsoft.Json.Linq.JObject.FromObject(r);
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = obj })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.Message:
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = "Hi, this is my message." })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ParticipantAdded:
-                                        u = new NooSphere.Core.ActivityModel.User();
-                                        u.Id = Guid.NewGuid();
-                                        u.Email = "my@email.com";
-                                        u.Name = "My Name";
-                                        obj = Newtonsoft.Json.Linq.JObject.FromObject(u);
-                                        obj.Remove("Friends");
-                                        Newtonsoft.Json.Linq.JObject data = Newtonsoft.Json.Linq.JObject.FromObject(new { ActivityId = Guid.NewGuid(), Participant = obj });
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = data })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.ParticipantRemoved:
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = new { ActivityId = Guid.NewGuid(), ParticipantId = Guid.NewGuid() } })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendAdded:
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendRequest:
-                                        u = new NooSphere.Core.ActivityModel.User();
-                                        u.Id = Guid.NewGuid();
-                                        u.Email = "my-friend@email.com";
-                                        u.Status = "Doing good...";
-                                        u.Name = "My Friends name";
-                                        obj = Newtonsoft.Json.Linq.JObject.FromObject(u);
-                                        obj.Remove("Friends");
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = obj })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.FriendDeleted:
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = Guid.NewGuid() })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.UserConnected:
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.UserDisconnected:
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = Guid.NewGuid() })
-                                        break;
-                                    case NooSphere.Cloud.ActivityManager.Events.NotificationType.UserStatusChanged:
-                                        @Html.Partial("FormattedJson", new { Event = notificationType.ToString(), Data = new { UserId = Guid.NewGuid(), Status = "I'm eating cake." } })
-                                        break;
-                                }
+                <h5>@notificationType.ToString():</h5>
+                <br />
+                <p style="background: #fff; margin: auto auto; padding: 5px; width: 90%;">
+                    <code>
+                        @{
+                            JObject obj;
+                            Activity a;
+                            Resource r;
+                            User u;
+                            switch (notificationType)
+                            {
+                                case NotificationType.ActivityAdded:
+                                case NotificationType.ActivityUpdated:
+                                    a = new Activity();
+                                    u = new User();
+                                    u.Id = Guid.NewGuid();
+                                    u.Email = "my@email.com";
+                                    u.Name = "My Name";
+                                    a.Id = Guid.NewGuid();
+                                    a.Name = "My activity";
+                                    a.Owner = u;
+                                    obj = JObject.FromObject(a);
+                                    obj.Remove("History");
+                                    obj.Remove("IsHistory");
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = obj})
+                                    break;
+                                case NotificationType.ActivityDeleted:
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = Guid.NewGuid()})
+                                    break;
+                                case NotificationType.FileDownload:
+                                case NotificationType.FileUpload:
+                                case NotificationType.FileDelete:
+                                    r = new Resource();
+                                    r.ActionId = Guid.NewGuid();
+                                    r.ActivityId = Guid.NewGuid();
+                                    r.Id = Guid.NewGuid();
+                                    r.Name = "My document";
+                                    r.Size = 7234;
+                                    r.CreationTime = DateTime.UtcNow.ToString("u");
+                                    r.LastWriteTime = DateTime.UtcNow.ToString("u");
+                                    r.RelativePath = "document.pdf";
+                                    obj = JObject.FromObject(r);
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = obj})
+                                    break;
+                                case NotificationType.Message:
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = "Hi, this is my message."})
+                                    break;
+                                case NotificationType.ParticipantAdded:
+                                    u = new User();
+                                    u.Id = Guid.NewGuid();
+                                    u.Email = "my@email.com";
+                                    u.Name = "My Name";
+                                    obj = JObject.FromObject(u);
+                                    obj.Remove("Friends");
+                                    JObject data = JObject.FromObject(new {ActivityId = Guid.NewGuid(), Participant = obj});
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = data})
+                                    break;
+                                case NotificationType.ParticipantRemoved:
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = new {ActivityId = Guid.NewGuid(), ParticipantId = Guid.NewGuid()}})
+                                    break;
+                                case NotificationType.FriendAdded:
+                                case NotificationType.FriendRequest:
+                                    u = new User();
+                                    u.Id = Guid.NewGuid();
+                                    u.Email = "my-friend@email.com";
+                                    u.Status = "Doing good...";
+                                    u.Name = "My Friends name";
+                                    obj = JObject.FromObject(u);
+                                    obj.Remove("Friends");
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = obj})
+                                    break;
+                                case NotificationType.FriendDeleted:
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = Guid.NewGuid()})
+                                    break;
+                                case NotificationType.UserConnected:
+                                case NotificationType.UserDisconnected:
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = Guid.NewGuid()})
+                                    break;
+                                case NotificationType.UserStatusChanged:
+                                    @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = new {UserId = Guid.NewGuid(), Status = "I'm eating cake."}})
+                                    break;
                             }
-                        </code>
-                        </p>
-                    }
-                }
-            </hgroup>
-      </section>
+                        }
+                    </code>
+                </p>
+            }
+        }
+    </hgroup>
+</section>

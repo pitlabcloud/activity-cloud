@@ -1,36 +1,42 @@
-﻿/// <licence>
-/// 
-/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
-/// 
-/// Pervasive Interaction Technology Laboratory (pIT lab)
-/// IT University of Copenhagen
-///
-/// This library is free software; you can redistribute it and/or 
-/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
-/// as published by the Free Software Foundation. Check 
-/// http://www.gnu.org/licenses/gpl.html for details.
-/// 
-/// </licence>
+﻿#region License
+
+// Copyright (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+// 
+// Pervasive Interaction Technology Laboratory (pIT lab)
+// IT University of Copenhagen
+// 
+// This library is free software; you can redistribute it and/or 
+// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+// as published by the Free Software Foundation. Check 
+// http://www.gnu.org/licenses/gpl.html for details.
+
+#endregion
+
+#region
 
 using System;
-using System.Configuration;
 using System.Web.Http;
+using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.ActivityManager.Events;
-using NooSphere.Cloud.Data.Registry;
-using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
+
+#endregion
 
 namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class DeviceController : BaseController
     {
+        private ActivityController ActivityController;
+        private FriendController FriendController;
+
         #region Exposed API Methods
+
         /// <summary>
-        /// Register the device and pair it with the specified user.
+        ///   Register the device and pair it with the specified user.
         /// </summary>
-        /// <param name="userId">Guid representation of a userId</param>
-        /// <returns>Returns true if device was registered to the user, false if user doesn't exist or device is already registered.</returns>
+        /// <param name="userId"> Guid representation of a userId </param>
+        /// <returns> Returns true if device was registered to the user, false if user doesn't exist or device is already registered. </returns>
         public bool Post(Guid userId)
         {
             if (CurrentUser != null) return false;
@@ -39,13 +45,29 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             {
                 if (DeviceRegistry.ConnectUser(ConnectionId, userId))
                 {
+                    ActivityController = new ActivityController();
+                    FriendController = new FriendController();
+
+                    // Subscribe to user
                     Notifier.Subscribe(ConnectionId, userId);
-                    foreach (User friend in CurrentUser.Friends)
+
+                    // Subscribe to friends
+                    foreach (User friend in UserRegistry.Get(userId).Friends)
                         Notifier.Subscribe(ConnectionId, friend.Id);
 
-                    foreach (FriendRequest fr in new FriendController().GetFriendRequests(userId))
-                        Notifier.NotifyGroup(userId, NotificationType.FriendRequest, new UserController().GetExtendedUser(fr.UserId));
+                    // Subscribe to activities and push to client
+                    foreach (JObject activity in ActivityController.GetExtendedActivities(userId))
+                    {
+                        Notifier.Subscribe(ConnectionId, Guid.Parse(activity["Id"].ToString()));
+                        Notifier.NotifyGroup(ConnectionId, NotificationType.ActivityAdded, activity);
+                    }
 
+                    // Push pending friend requests
+                    foreach (FriendRequest fr in FriendController.GetFriendRequests(userId))
+                        Notifier.NotifyGroup(ConnectionId, NotificationType.FriendRequest,
+                                             new UserController().GetExtendedUser(fr.UserId));
+
+                    // Push connected device to user
                     if (DeviceRegistry.ConnectedDevices(CurrentUserId).Count == 1)
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.UserConnected, userId);
                     return true;
@@ -55,10 +77,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         /// <summary>
-        /// Unregister the device and remove the pairing with the specified user.
+        ///   Unregister the device and remove the pairing with the specified user.
         /// </summary>
-        /// <param name="userId">Guid representation of a userId.</param>
-        /// <returns>Returns true if device was unregistered, false if device is not registered to user.</returns>
+        /// <param name="userId"> Guid representation of a userId. </param>
+        /// <returns> Returns true if device was unregistered, false if device is not registered to user. </returns>
         [RequireUser]
         public bool Delete(Guid userId)
         {
@@ -72,9 +94,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             }
             return false;
         }
+
         #endregion
 
         #region Public Methods
+
         [NonAction]
         public void Clear()
         {
@@ -83,6 +107,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 DeviceRegistry.Remove(device.Id);
             }
         }
+
         #endregion
     }
 }

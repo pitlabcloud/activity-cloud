@@ -1,3 +1,4 @@
+@using System.Web.Http.Description
 @model System.Web.Http.Description.IApiExplorer
 @{
     ViewBag.Title = "Activity Cloud APIs";
@@ -5,9 +6,9 @@
 <section class="content-wrapper main-content clear-fix">
     <h3>Activity Cloud APIs</h3>
     <hgroup>
-    The following methods are available within Activity Cloud API:
+        The following methods are available within Activity Cloud API:
         <ul>
-            @foreach (var api in Model.ApiDescriptions)
+            @foreach (ApiDescription api in Model.ApiDescriptions)
             {
                 <li>
                     <h5>@api.HttpMethod @api.RelativePath</h5>
@@ -17,7 +18,7 @@
                         {
                             <h6>Parameters</h6>
                             <ul>
-                                @foreach (var parameter in api.ParameterDescriptions)
+                                @foreach (ApiParameterDescription parameter in api.ParameterDescriptions)
                                 {
                                     <li>@parameter.Name: @parameter.Documentation (@parameter.Source)</li>
                                 }

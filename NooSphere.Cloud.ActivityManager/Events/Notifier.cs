@@ -1,30 +1,36 @@
-﻿/// <licence>
-/// 
-/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
-/// 
-/// Pervasive Interaction Technology Laboratory (pIT lab)
-/// IT University of Copenhagen
-///
-/// This library is free software; you can redistribute it and/or 
-/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
-/// as published by the Free Software Foundation. Check 
-/// http://www.gnu.org/licenses/gpl.html for details.
-/// 
-/// </licence>
+﻿#region License
+
+// Copyright (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+// 
+// Pervasive Interaction Technology Laboratory (pIT lab)
+// IT University of Copenhagen
+// 
+// This library is free software; you can redistribute it and/or 
+// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+// as published by the Free Software Foundation. Check 
+// http://www.gnu.org/licenses/gpl.html for details.
+
+#endregion
+
+#region
 
 using System;
 using SignalR;
+
+#endregion
 
 namespace NooSphere.Cloud.ActivityManager.Events
 {
     public class Notifier
     {
-        private static IPersistentConnectionContext context = GlobalHost.ConnectionManager.GetConnectionContext<EventDispatcher>();
+        private static readonly IPersistentConnectionContext context =
+            GlobalHost.ConnectionManager.GetConnectionContext<EventDispatcher>();
 
         public static void Subscribe(Guid connectionId, Guid groupId)
         {
             context.Groups.Add(connectionId.ToString(), groupId.ToString());
         }
+
         public static void Unsubscribe(Guid connectionId, Guid groupId)
         {
             context.Groups.Remove(connectionId.ToString(), groupId.ToString());
@@ -57,7 +63,7 @@ namespace NooSphere.Cloud.ActivityManager.Events
 
         public static object ConstructEvent(NotificationType type, object obj)
         {
-            return new { Event = type.ToString(), Data = obj };
+            return new {Event = type.ToString(), Data = obj};
         }
     }
 
