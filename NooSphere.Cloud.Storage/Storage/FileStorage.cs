@@ -1,16 +1,18 @@
-﻿/// <licence>
-/// 
-/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
-/// 
-/// Pervasive Interaction Technology Laboratory (pIT lab)
-/// IT University of Copenhagen
-///
-/// This library is free software; you can redistribute it and/or 
-/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
-/// as published by the Free Software Foundation. Check 
-/// http://www.gnu.org/licenses/gpl.html for details.
-/// 
-/// </licence>
+﻿#region License
+
+// Copyright (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+// 
+// Pervasive Interaction Technology Laboratory (pIT lab)
+// IT University of Copenhagen
+// 
+// This library is free software; you can redistribute it and/or 
+// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+// as published by the Free Software Foundation. Check 
+// http://www.gnu.org/licenses/gpl.html for details.
+
+#endregion
+
+#region
 
 using System;
 using System.Collections.Specialized;
@@ -18,11 +20,12 @@ using System.IO;
 using Amazon.S3;
 using Amazon.S3.Model;
 
+#endregion
+
 namespace NooSphere.Cloud.Data.Storage
 {
     public class FileStorage
     {
-        #region Private Members
         private const string bucketName = "noosphere.activitycloud.files";
 
         private const string RelativePathKey = "RelativePath";
@@ -30,37 +33,39 @@ namespace NooSphere.Cloud.Data.Storage
         private const string LastWriteTimeKey = "LastWriteTime";
         private const string SizeKey = "Size";
 
-        private string AccessKey;
-        private string AccessSecret;
-        #endregion
+        private readonly string AccessKey;
+        private readonly string AccessSecret;
 
         #region Constructors
+
         public FileStorage(string accessKey, string accessSecret)
         {
             AccessKey = accessKey;
             AccessSecret = accessSecret;
         }
+
         #endregion
 
         #region Public Methods
-        public byte[] Download(string id)
+
+        public Stream Download(string id)
         {
-            using (var client = SetupClient())
+            try
             {
-                GetObjectResponse response = client.GetObject(new GetObjectRequest().WithBucketName(bucketName).WithKey(id));
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    response.ResponseStream.CopyTo(ms);
-                    return ms.ToArray();
-                }
+                using (AmazonS3Client client = SetupClient())
+                    return
+                        client.GetObject(new GetObjectRequest().WithBucketName(bucketName).WithKey(id)).ResponseStream;
+            }
+            catch (AmazonS3Exception)
+            {
+                return null;
             }
         }
 
-        public bool Upload(string id, string relativePath, DateTime creationTime, DateTime lastWriteTime, int size, byte[] data)
+        public bool Upload(string id, string relativePath, DateTime creationTime, DateTime lastWriteTime, int size,
+                           Stream stream)
         {
-            MemoryStream stream = new MemoryStream(data);
-
-            NameValueCollection metadata = new NameValueCollection();
+            var metadata = new NameValueCollection();
             metadata.Add(RelativePathKey, relativePath);
             metadata.Add(CreationTimeKey, creationTime.ToString("u"));
             metadata.Add(LastWriteTimeKey, lastWriteTime.ToString("u"));
@@ -70,26 +75,36 @@ namespace NooSphere.Cloud.Data.Storage
             req.WithInputStream(stream);
             req.WithMetaData(metadata);
 
-            using (var client = SetupClient())
-            {
+            using (AmazonS3Client client = SetupClient())
                 client.PutObject(req.WithBucketName(bucketName).WithKey(id));
-            }
 
             return true;
         }
+
+        public DateTime LastWriteTime(string id)
+        {
+            using (AmazonS3Client client = SetupClient())
+                return
+                    DateTime.Parse(
+                        client.GetObject(new GetObjectRequest().WithBucketName(bucketName).WithKey(id)).Metadata[
+                            LastWriteTimeKey]);
+        }
+
         #endregion
 
         #region Private Methods
+
         private AmazonS3Client SetupClient()
         {
-            AmazonS3Config S3Config = new AmazonS3Config
-            {
-                ServiceURL = "s3.amazonaws.com",
-                CommunicationProtocol = Amazon.S3.Model.Protocol.HTTP
-            };
+            var S3Config = new AmazonS3Config
+                               {
+                                   ServiceURL = "s3.amazonaws.com",
+                                   CommunicationProtocol = Protocol.HTTP
+                               };
 
             return new AmazonS3Client(AccessKey, AccessSecret, S3Config);
         }
+
         #endregion
     }
 }

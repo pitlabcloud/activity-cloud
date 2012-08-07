@@ -1,44 +1,46 @@
-﻿/// <licence>
-/// 
-/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
-/// 
-/// Pervasive Interaction Technology Laboratory (pIT lab)
-/// IT University of Copenhagen
-///
-/// This library is free software; you can redistribute it and/or 
-/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
-/// as published by the Free Software Foundation. Check 
-/// http://www.gnu.org/licenses/gpl.html for details.
-/// 
-/// </licence>
+﻿#region License
+
+// Copyright (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+// 
+// Pervasive Interaction Technology Laboratory (pIT lab)
+// IT University of Copenhagen
+// 
+// This library is free software; you can redistribute it and/or 
+// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+// as published by the Free Software Foundation. Check 
+// http://www.gnu.org/licenses/gpl.html for details.
+
+#endregion
+
+#region
 
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
-using NooSphere.Cloud.ActivityManager.Events;
-using NooSphere.Cloud.Data.Registry;
 using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
+
+#endregion
 
 namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     [ApiExplorerSettings(IgnoreApi = true)]
     public class UserController : BaseController
     {
-        #region Private Members
-        private UserStorage UserStorage = new UserStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"], ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
-        #endregion
+        private readonly UserStorage UserStorage = new UserStorage(
+            ConfigurationManager.AppSettings["AmazonAccessKeyId"],
+            ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
 
         #region Exposed API Methods
+
         /// <summary>
-        /// Get a complete list of users.
+        ///   Get a complete list of users.
         /// </summary>
-        /// <returns>Json representation of the list of users.</returns>
+        /// <returns> Json representation of the list of users. </returns>
         [RequireUser]
         public List<JObject> Get()
         {
@@ -47,10 +49,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         /// <summary>
-        /// Get the user that matches the required user Id.
+        ///   Get the user that matches the required user Id.
         /// </summary>
-        /// <param name="userId">Guid representation of the user Id.</param>
-        /// <returns>Json representation of the user.</returns>
+        /// <param name="userId"> Guid representation of the user Id. </param>
+        /// <returns> Json representation of the user. </returns>
         [RequireUser]
         public JObject Get(Guid userId)
         {
@@ -61,10 +63,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         /// <summary>
-        /// Get the user that matches the required email.
+        ///   Get the user that matches the required email.
         /// </summary>
-        /// <param name="email">Email of the specific user.</param>
-        /// <returns>Json representation of the user.</returns>
+        /// <param name="email"> Email of the specific user. </param>
+        /// <returns> Json representation of the user. </returns>
         public JObject Get(string email)
         {
             User user = UserRegistry.GetUserOnEmail(email);
@@ -74,10 +76,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         /// <summary>
-        /// Create user in Activity Cloud
+        ///   Create user in Activity Cloud
         /// </summary>
-        /// <param name="data">Json representation of the user.</param>
-        /// <returns>Returns true if user is added, false if user already exists.</returns>
+        /// <param name="data"> Json representation of the user. </param>
+        /// <returns> Returns true if user is added, false if user already exists. </returns>
         public bool Post(JObject data)
         {
             if (data != null && IsFormatOk(data))
@@ -94,11 +96,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         /// <summary>
-        /// Update user in Activity Cloud.
+        ///   Update user in Activity Cloud.
         /// </summary>
-        /// <param name="userId">Guid representation of the user Id.</param>
-        /// <param name="data">Json representation of the user.</param>
-        /// <returns>Returns true if user is updated, false if not.</returns>
+        /// <param name="userId"> Guid representation of the user Id. </param>
+        /// <param name="data"> Json representation of the user. </param>
+        /// <returns> Returns true if user is updated, false if not. </returns>
         [RequireUser]
         public bool Put(Guid userId, JObject data)
         {
@@ -109,10 +111,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         /// <summary>
-        /// Delete user in Activity Cloud.
+        ///   Delete user in Activity Cloud.
         /// </summary>
-        /// <param name="userId">Guid representation of the user Id.</param>
-        /// <returns>Returns true if user is deleted, false if not.</returns>
+        /// <param name="userId"> Guid representation of the user Id. </param>
+        /// <returns> Returns true if user is deleted, false if not. </returns>
         [RequireUser]
         public bool Delete(Guid userId)
         {
@@ -122,9 +124,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             }
             return false;
         }
+
         #endregion
 
         #region Public Methods
+
         [NonAction]
         public List<JObject> GetExtendedUsers()
         {
@@ -155,7 +159,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [NonAction]
         public bool AddUser(JObject data)
         {
-            User user = data.ToObject<User>();
+            var user = data.ToObject<User>();
             if (UserRegistry.Add(user))
             {
                 UserStorage.Add(user.Id, data);
@@ -167,7 +171,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [NonAction]
         public bool UpdateUser(JObject data)
         {
-            User user = data.ToObject<User>();
+            var user = data.ToObject<User>();
             if (UserRegistry.Upsert(user.Id, user))
             {
                 UserStorage.Add(user.Id, data);
@@ -193,7 +197,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [NonAction]
         public List<JObject> ReturnObject(List<User> users)
         {
-            List<JObject> result = new List<JObject>();
+            var result = new List<JObject>();
             foreach (User user in users)
                 result.Add(ReturnObject(user));
 
@@ -224,6 +228,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             if (obj["Email"] == null || obj["Name"] == null) return false;
             return true;
         }
+
         #endregion
     }
 }

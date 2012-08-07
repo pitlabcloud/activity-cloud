@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Newtonsoft.Json.Linq.JObject>
+﻿@using Newtonsoft.Json.Linq
+@model IEnumerable<Newtonsoft.Json.Linq.JObject>
 @{
     ViewBag.Title = "User - Admin page";
 }
@@ -10,13 +11,13 @@
             <td></td>
             <td></td>
         </tr>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item["Name"]</td>
-            <td>@item["Email"]</td>
-            <td>@Html.ActionLink("Delete", "Delete", new { id = item["Id"].ToObject<Guid>() })</td>
-        </tr>
-    }
+        @foreach (JObject item in Model)
+        {
+            <tr>
+                <td>@item["Name"]</td>
+                <td>@item["Email"]</td>
+                <td>@Html.ActionLink("Delete", "Delete", new {id = item["Id"].ToObject<Guid>()})</td>
+            </tr>
+        }
     </table>
 </section>
