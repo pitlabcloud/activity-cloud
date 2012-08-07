@@ -1,48 +1,44 @@
-﻿/// <licence>
-/// 
-/// (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
-/// 
-/// Pervasive Interaction Technology Laboratory (pIT lab)
-/// IT University of Copenhagen
-///
-/// This library is free software; you can redistribute it and/or 
-/// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
-/// as published by the Free Software Foundation. Check 
-/// http://www.gnu.org/licenses/gpl.html for details.
-/// 
-/// </licence>
+﻿#region License
+
+// Copyright (c) 2012 Steven Houben(shou@itu.dk) and Søren Nielsen(snielsen@itu.dk)
+// 
+// Pervasive Interaction Technology Laboratory (pIT lab)
+// IT University of Copenhagen
+// 
+// This library is free software; you can redistribute it and/or 
+// modify it under the terms of the GNU GENERAL PUBLIC LICENSE V3 or later, 
+// as published by the Free Software Foundation. Check 
+// http://www.gnu.org/licenses/gpl.html for details.
+
+#endregion
+
+#region
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NooSphere.Cloud.ActivityManager.Authentication;
 using NooSphere.Cloud.ActivityManager.Events;
-using NooSphere.Cloud.Data.Registry;
-using NooSphere.Cloud.Data.Storage;
 using NooSphere.Core.ActivityModel;
+
+#endregion
 
 namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class ParticipantController : BaseController
     {
-        #region Private Members
-        private ActivityController ActivityController = new ActivityController();
-        private UserController UserController = new UserController();
-        #endregion
+        private readonly ActivityController ActivityController = new ActivityController();
+        private readonly UserController UserController = new UserController();
 
         #region Exposed API Methods
+
         /// <summary>
-        /// Add participant to the specified activity.
+        ///   Add participant to the specified activity.
         /// </summary>
-        /// <param name="activityId">Guid representation of the activity Id.</param>
-        /// <param name="participantId">Guid representation of the user Id.</param>
-        /// <returns>Returns true if participant was added, false if not.</returns>
+        /// <param name="activityId"> Guid representation of the activity Id. </param>
+        /// <param name="participantId"> Guid representation of the user Id. </param>
+        /// <returns> Returns true if participant was added, false if not. </returns>
         [RequireUser]
         public bool Post(Guid activityId, Guid participantId)
         {
@@ -50,13 +46,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             {
                 JObject activity = ActivityController.GetExtendedActivity(activityId);
                 JObject participant = UserController.GetExtendedUser(participantId);
-                
+
                 List<JObject> participants = activity["Participants"].Children<JObject>().ToList();
                 participants.Add(participant);
                 activity["Participants"] = JToken.FromObject(participants);
 
-                ActivityController.UpdateActivity(Events.NotificationType.None, activity);
-                Notifier.NotifyGroup(activityId, NotificationType.ParticipantAdded, new { ActivityId = activityId, Participant = participant });
+                ActivityController.UpdateActivity(NotificationType.None, activity);
+                Notifier.NotifyGroup(activityId, NotificationType.ParticipantAdded,
+                                     new {ActivityId = activityId, Participant = participant});
                 Notifier.NotifyGroup(participantId, NotificationType.ActivityAdded, activity);
                 return true;
             }
@@ -64,11 +61,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         /// <summary>
-        /// Remove a participant from the specified activity.
+        ///   Remove a participant from the specified activity.
         /// </summary>
-        /// <param name="activityId">Guid representation of the activity Id.</param>
-        /// <param name="participantId">Guid representation of the user Id.</param>
-        /// <returns>Returns true if participant was removed, false if not.</returns>
+        /// <param name="activityId"> Guid representation of the activity Id. </param>
+        /// <param name="participantId"> Guid representation of the user Id. </param>
+        /// <returns> Returns true if participant was removed, false if not. </returns>
         [RequireUser]
         public bool Delete(Guid activityId, Guid participantId)
         {
@@ -78,21 +75,23 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 JObject participant = UserController.GetExtendedUser(participantId);
                 List<User> participants = activity.Participants.Where(u => u.Id != participantId).ToList();
 
-                List<JObject> result = new List<JObject>();
+                var result = new List<JObject>();
                 foreach (User p in participants)
                     result.Add(UserController.GetExtendedUser(p.Id));
 
                 JObject completeActivity = ActivityController.GetExtendedActivity(activityId);
                 completeActivity["Participants"] = JToken.FromObject(result);
 
-                ActivityController.UpdateActivity(Events.NotificationType.None, completeActivity);
-                Notifier.NotifyGroup(activityId, NotificationType.ParticipantRemoved, new { ActivityId = activityId, ParticipantId = participantId });
-                Notifier.NotifyGroup(participantId, NotificationType.ActivityDeleted, new { Id = activity.Id } );
+                ActivityController.UpdateActivity(NotificationType.None, completeActivity);
+                Notifier.NotifyGroup(activityId, NotificationType.ParticipantRemoved,
+                                     new {ActivityId = activityId, ParticipantId = participantId});
+                Notifier.NotifyGroup(participantId, NotificationType.ActivityDeleted, new {activity.Id});
 
                 return true;
             }
             return false;
         }
+
         #endregion
     }
 }

@@ -1,26 +1,28 @@
-﻿@{
+﻿@using NooSphere.Core.ActivityModel
+@using Action = NooSphere.Core.ActivityModel.Action
+@{
     ViewBag.Title = "Extend the Activity Model";
 
-    NooSphere.Core.ActivityModel.User u = new NooSphere.Core.ActivityModel.User();
+    var u = new User();
     u.Name = "My Name";
     u.Email = "my@email.com";
     u.Id = Guid.NewGuid();
-    NooSphere.Core.ActivityModel.User u2 = new NooSphere.Core.ActivityModel.User();
+    var u2 = new User();
     u2.Name = "Friends Name";
     u2.Email = "friend@email.com";
     u2.Id = Guid.NewGuid();
     u.Friends.Add(u2);
 
-    NooSphere.Core.ActivityModel.Activity act = new NooSphere.Core.ActivityModel.Activity();
+    var act = new Activity();
     act.Name = "My activity";
     act.Id = Guid.NewGuid();
     act.Owner = u;
 
-    NooSphere.Core.ActivityModel.Action a = new NooSphere.Core.ActivityModel.Action();
+    var a = new Action();
     a.Name = "My action";
     a.Id = Guid.NewGuid();
 
-    NooSphere.Core.ActivityModel.Resource r = new NooSphere.Core.ActivityModel.Resource();
+    var r = new Resource();
     r.Name = "My resource";
     r.Id = Guid.NewGuid();
     r.ActionId = a.Id;
@@ -32,32 +34,32 @@
 <section class="content-wrapper main-content clear-fix">
     <h3>Extend the Activity Model</h3>
     <hgroup>
-    <p>
-        The activity model is really simple and can be extended to include the properties that fits your system. The following are the base classes, that are used in Activity Cloud.
-    </p>
-    <p>Action example in JSON:</p>
-    <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
-    <code style="font-weight: bold;">
-        @Html.Partial("FormattedJson", a)
-    </code>
-    </p>
-    <p>Activity example in JSON:</p>
-    <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
-    <code style="font-weight: bold;">
-        @Html.Partial("FormattedJson", act)
-    </code>
-    </p>
-    <p>Resource example in JSON:</p>
-    <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
-    <code style="font-weight: bold;">
-        @Html.Partial("FormattedJson", r)
-    </code>
-    </p>
-    <p>User example in JSON:</p>
-    <p style="background: #fff; padding: 5px; width: 80%; margin: auto auto;">
-    <code style="font-weight: bold;">
-        @Html.Partial("FormattedJson", u)
-    </code>
-    </p>
+        <p>
+            The activity model is really simple and can be extended to include the properties that fits your system. The following are the base classes, that are used in Activity Cloud.
+        </p>
+        <p>Action example in JSON:</p>
+        <p style="background: #fff; margin: auto auto; padding: 5px; width: 80%;">
+            <code style="font-weight: bold;">
+                @Html.Partial("FormattedJson", a)
+            </code>
+        </p>
+        <p>Activity example in JSON:</p>
+        <p style="background: #fff; margin: auto auto; padding: 5px; width: 80%;">
+            <code style="font-weight: bold;">
+                @Html.Partial("FormattedJson", act)
+            </code>
+        </p>
+        <p>Resource example in JSON:</p>
+        <p style="background: #fff; margin: auto auto; padding: 5px; width: 80%;">
+            <code style="font-weight: bold;">
+                @Html.Partial("FormattedJson", r)
+            </code>
+        </p>
+        <p>User example in JSON:</p>
+        <p style="background: #fff; margin: auto auto; padding: 5px; width: 80%;">
+            <code style="font-weight: bold;">
+                @Html.Partial("FormattedJson", u)
+            </code>
+        </p>
     </hgroup>
 </section>

@@ -1,2 +1,4 @@
-﻿@model System.Object
-@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model, Newtonsoft.Json.Formatting.Indented).Replace(" ", "&nbsp;").Replace("\r\n","<br />"))
+﻿@using Newtonsoft.Json
+@model Object
+
+@Html.Raw(JsonConvert.SerializeObject(Model, Formatting.Indented).Replace(" ", "&nbsp;").Replace("\r\n", "<br />"))
