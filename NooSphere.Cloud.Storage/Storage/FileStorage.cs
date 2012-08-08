@@ -28,6 +28,8 @@ namespace NooSphere.Cloud.Data.Storage
     {
         private const string BucketName = "noosphere.activitycloud.files";
         private const string RelativePathKey = "RelativePath";
+        private const string CloudPathKey = "CloudPath";
+        private const string FilenameKey = "Filename";
         private const string CreationTimeKey = "CreationTime";
         private const string LastWriteTimeKey = "LastWriteTime";
         private const string SizeKey = "Size";
@@ -61,13 +63,20 @@ namespace NooSphere.Cloud.Data.Storage
             }
         }
 
-        public bool Upload(string id, string relativePath, DateTime creationTime, DateTime lastWriteTime, long size, Stream stream)
+        public bool Upload(string id, Stream stream)
         {
-            var metadata = new NameValueCollection();
-            metadata.Add(RelativePathKey, relativePath);
-            metadata.Add(CreationTimeKey, creationTime.ToString("u"));
-            metadata.Add(LastWriteTimeKey, lastWriteTime.ToString("u"));
-            metadata.Add(SizeKey, size.ToString());
+            NameValueCollection metadata;
+            if(Exists(id))
+                metadata = new NameValueCollection
+                               {
+                                   {LastWriteTimeKey, DateTime.UtcNow.ToString("u")}
+                               };
+            else
+                metadata = new NameValueCollection
+                               {
+                                   {CreationTimeKey, DateTime.UtcNow.ToString("u")},
+                                   {LastWriteTimeKey, DateTime.UtcNow.ToString("u")}
+                               };
 
             var req = new PutObjectRequest
                           {
@@ -97,15 +106,33 @@ namespace NooSphere.Cloud.Data.Storage
 
         #region Private Methods
 
+        private bool Exists(string id)
+        {
+            try
+            {
+                using (var client = SetupClient())
+                {
+                    client.GetObjectMetadata((new GetObjectMetadataRequest()).WithBucketName(BucketName).WithKey(id));
+                    return true;
+                }
+            }
+            catch (AmazonS3Exception ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    return false;
+            }
+            return false;
+        }
+
         private AmazonS3Client SetupClient()
         {
-            var S3Config = new AmazonS3Config
+            var s3Config = new AmazonS3Config
                                {
                                    ServiceURL = "s3.amazonaws.com",
                                    CommunicationProtocol = Protocol.HTTP
                                };
 
-            return new AmazonS3Client(_accessKey, _accessSecret, S3Config);
+            return new AmazonS3Client(_accessKey, _accessSecret, s3Config);
         }
 
         #endregion
