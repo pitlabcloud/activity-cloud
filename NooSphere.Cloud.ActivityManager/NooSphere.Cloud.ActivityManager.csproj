@@ -181,9 +181,6 @@
     </Compile>
     <Compile Include="Models\ActivityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Sensitive.config">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="Scripts\jquery-1.7.2.intellisense.js">
       <DependentUpon>jquery-1.7.2.js</DependentUpon>
     </None>
@@ -251,6 +248,9 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <None Include="Sensitive.config">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Views\Home\Connect.cshtml" />
     <Content Include="Views\Shared\Features.cshtml" />
     <Content Include="Views\Home\Events.cshtml" />
