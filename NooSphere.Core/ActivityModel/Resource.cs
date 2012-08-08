@@ -26,8 +26,6 @@ namespace NooSphere.Core.ActivityModel
 
         public Guid ActivityId { get; set; }
         public Guid ActionId { get; set; }
-        public string RelativePath { get; set; }
-        public string CloudPath { get; set; }
         public string FileName { get; set; }
         public int Size { get; set; }
         public string CreationTime { get; set; }
