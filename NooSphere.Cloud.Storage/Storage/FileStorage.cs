@@ -69,12 +69,17 @@ namespace NooSphere.Cloud.Data.Storage
             metadata.Add(LastWriteTimeKey, lastWriteTime.ToString("u"));
             metadata.Add(SizeKey, size.ToString());
 
-            var req = new PutObjectRequest();
-            req.WithInputStream(stream);
-            req.WithMetaData(metadata);
+            var req = new PutObjectRequest
+                          {
+                              BucketName = BucketName,
+                              Key = id,
+                              InputStream = stream,
+                              Timeout = -1,
+                              ReadWriteTimeout = 300000
+                          };
 
             using (var client = SetupClient())
-                client.PutObject(req.WithBucketName(BucketName).WithKey(id));
+                client.PutObject(req.WithMetaData(metadata));
 
             return true;
         }
