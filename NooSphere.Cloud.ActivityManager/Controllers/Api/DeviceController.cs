@@ -27,8 +27,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class DeviceController : BaseController
     {
-        private ActivityController ActivityController;
-        private FriendController FriendController;
+        private ActivityController _activityController;
+        private FriendController _friendController;
 
         #region Exposed API Methods
 
@@ -41,29 +41,29 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         {
             if (CurrentUser != null) return false;
             if (ConnectionId == Guid.Empty) return false;
-            if (userId != null && UserRegistry.ExistingId(userId))
+            if (UserRegistry.ExistingId(userId))
             {
                 if (DeviceRegistry.ConnectUser(ConnectionId, userId))
                 {
-                    ActivityController = new ActivityController();
-                    FriendController = new FriendController();
+                    _activityController = new ActivityController();
+                    _friendController = new FriendController();
 
                     // Subscribe to user
                     Notifier.Subscribe(ConnectionId, userId);
 
                     // Subscribe to friends
-                    foreach (User friend in UserRegistry.Get(userId).Friends)
+                    foreach (var friend in UserRegistry.Get(userId).Friends)
                         Notifier.Subscribe(ConnectionId, friend.Id);
 
                     // Subscribe to activities and push to client
-                    foreach (JObject activity in ActivityController.GetExtendedActivities(userId))
+                    foreach (var activity in _activityController.GetExtendedActivities(userId))
                     {
                         Notifier.Subscribe(ConnectionId, Guid.Parse(activity["Id"].ToString()));
                         Notifier.NotifyGroup(ConnectionId, NotificationType.ActivityAdded, activity);
                     }
 
                     // Push pending friend requests
-                    foreach (FriendRequest fr in FriendController.GetFriendRequests(userId))
+                    foreach (var fr in _friendController.GetFriendRequests(userId))
                         Notifier.NotifyGroup(ConnectionId, NotificationType.FriendRequest,
                                              new UserController().GetExtendedUser(fr.UserId));
 
@@ -85,7 +85,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         public bool Delete(Guid userId)
         {
             if (CurrentUser == null) return false;
-            if (userId != null && CurrentUser.Id == userId && DeviceRegistry.DisconnectUser(userId))
+            if (CurrentUser.Id == userId && DeviceRegistry.DisconnectUser(userId))
             {
                 Notifier.Unsubscribe(ConnectionId, userId);
                 if (DeviceRegistry.ConnectedDevices(CurrentUserId).Count == 0)
@@ -102,7 +102,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [NonAction]
         public void Clear()
         {
-            foreach (Device device in DeviceRegistry.Get())
+            foreach (var device in DeviceRegistry.Get())
             {
                 DeviceRegistry.Remove(device.Id);
             }

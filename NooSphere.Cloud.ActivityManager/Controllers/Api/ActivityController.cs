@@ -36,14 +36,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class ActivityController : BaseController
     {
-        private readonly ActivityRegistry ActivityRegistry =
+        private readonly ActivityRegistry _activityRegistry =
             new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
 
-        private readonly ActivityStorage ActivityStorage =
+        private readonly ActivityStorage _activityStorage =
             new ActivityStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"],
                                 ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
 
-        private readonly FileController FileController = new FileController();
+        private readonly FileController _fileController = new FileController();
 
         #region Exposed API Methods
 
@@ -71,7 +71,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [RequireUser]
         public HttpResponseMessage Get(Guid activityId)
         {
-            var activity = ActivityRegistry.Get(activityId);
+            var activity = _activityRegistry.Get(activityId);
             var response = new HttpResponseMessage();
             if (!IsParticipant(activity))
             {
@@ -96,7 +96,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         {
             if (data != null)
             {
-                if (data["Id"] == null && !data["Id"].HasValues)
+                if (data["Id"] == null || !data["Id"].HasValues)
                     data["Id"] = Guid.NewGuid().ToString();
 
                 var activity = JsonConvert.DeserializeObject<Activity>(data.ToString());
@@ -124,8 +124,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 if (IsOwner(data.ToObject<Activity>()) || IsParticipant(data.ToObject<Activity>()))
                 {
                     // Return if no changes has been made
-                    JObject oldActivity = ActivityStorage.Get(activityId);
-                    JObject compare = JObject.Parse(oldActivity.DeepClone().ToString());
+                    var oldActivity = _activityStorage.Get(activityId);
+                    var compare = JObject.Parse(oldActivity.DeepClone().ToString());
                     compare.Remove("History");
                     if (compare.ToString().Equals(data.ToString())) return;
 
@@ -149,8 +149,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [RequireUser]
         public void Delete(Guid activityId)
         {
-            Activity activity = ActivityRegistry.Get(activityId);
-            if (IsOwner(activity))
+            var activity = _activityRegistry.Get(activityId);
+            if (activity != null && IsOwner(activity))
                 RemoveActivity(NotificationType.ActivityDeleted, activityId);
         }
 
@@ -161,12 +161,12 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [NonAction]
         public List<JObject> GetExtendedActivities(Guid userId)
         {
-            List<Activity> activities = ActivityRegistry.GetOnUser(userId);
-            foreach (Activity activity in activities)
+            var activities = _activityRegistry.GetOnUser(userId);
+            foreach (var activity in activities)
             {
                 Notifier.Subscribe(ConnectionId, activity.Id);
                 if (activity.Actions != null && activity.Actions.Count > 0)
-                    foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
+                    foreach (var resource in activity.Actions.SelectMany(action => action.Resources))
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDownload, resource);
             }
             return ReturnObject(activities);
@@ -175,19 +175,19 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [NonAction]
         public JObject GetExtendedActivity(Guid activityId)
         {
-            return ActivityStorage.Get(activityId);
+            return _activityStorage.Get(activityId);
         }
 
         [NonAction]
         public Activity GetActivity(Guid activityId)
         {
-            return ActivityRegistry.Get(activityId);
+            return _activityRegistry.Get(activityId);
         }
 
         [NonAction]
         public void Clear()
         {
-            foreach (Activity activity in ActivityRegistry.Get())
+            foreach (var activity in _activityRegistry.Get())
             {
                 RemoveActivity(NotificationType.ActivityDeleted, activity.Id);
             }
@@ -197,13 +197,13 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         public bool AddActivity(NotificationType type, JObject data, bool asHistory = false)
         {
             var activity = data.ToObject<Activity>();
-            if (asHistory) activity.IsHistory = asHistory;
-            if (ActivityRegistry.Add(activity))
+            if (asHistory) activity.IsHistory = true;
+            if (_activityRegistry.Add(activity))
             {
-                ActivityStorage.Add(data.ToObject<Activity>().Id, data);
+                _activityStorage.Add(data.ToObject<Activity>().Id, data);
                 if (!asHistory) Notifier.Subscribe(ConnectionId, activity.Id);
                 Notifier.NotifyGroup(activity.Id, type, data);
-                if (!asHistory) FileController.Sync(activity, SyncType.Added);
+                if (!asHistory) _fileController.Sync(activity, SyncType.Added);
                 return true;
             }
             return false;
@@ -213,11 +213,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         public bool UpdateActivity(NotificationType type, JObject data)
         {
             var activity = data.ToObject<Activity>();
-            if (ActivityRegistry.Upsert(activity.Id, activity))
+            if (_activityRegistry.Upsert(activity.Id, activity))
             {
-                ActivityStorage.Add(data.ToObject<Activity>().Id, data);
+                _activityStorage.Add(data.ToObject<Activity>().Id, data);
                 Notifier.NotifyGroup(activity.Id, type, data);
-                FileController.Sync(activity, SyncType.Updated);
+                _fileController.Sync(activity, SyncType.Updated);
                 return true;
             }
             return false;
@@ -226,17 +226,17 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [NonAction]
         public bool RemoveActivity(NotificationType type, Guid activityId)
         {
-            Activity activity = ActivityRegistry.Get(activityId);
-            if (ActivityRegistry.Remove(activityId))
+            var activity = _activityRegistry.Get(activityId);
+            if (_activityRegistry.Remove(activityId))
             {
-                ActivityStorage.Remove(activityId);
+                _activityStorage.Remove(activityId);
                 if (CurrentUserId != Guid.Empty)
                 {
-                    foreach (Resource resource in activity.Actions.SelectMany(action => action.Resources))
+                    foreach (var resource in activity.Actions.SelectMany(action => action.Resources))
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDelete, resource);
                     Notifier.NotifyAll(NotificationType.ActivityDeleted, new {Id = activityId});
                 }
-                FileController.Sync(activity, SyncType.Removed);
+                _fileController.Sync(activity, SyncType.Removed);
                 return true;
             }
             return false;
@@ -246,20 +246,16 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 
         #region Private Methods
 
-        private List<JObject> ReturnObject(List<Activity> activities)
+        private List<JObject> ReturnObject(IEnumerable<Activity> activities)
         {
-            var result = new List<JObject>();
-            foreach (Activity activity in activities)
-                result.Add(ReturnObject(activity));
-
-            return result;
+            return activities.Select(ReturnObject).ToList();
         }
 
         private JObject ReturnObject(Activity activity)
         {
-            JObject result = JObject.FromObject(activity);
-            JObject storage = ActivityStorage.Get(activity.Id);
-            foreach (JProperty node in storage.Properties())
+            var result = JObject.FromObject(activity);
+            var storage = _activityStorage.Get(activity.Id);
+            foreach (var node in storage.Properties())
             {
                 if (result[node.Name] == null)
                     result.Add(node.Name, node.Value);
