@@ -39,9 +39,7 @@ namespace NooSphere.Cloud.Data.Registry
 
         public List<Activity> GetOnUser(Guid userId)
         {
-            return
-                Collection.FindAs<Activity>(Query.And(Query.EQ("Owner._id", userId), Query.EQ("IsHistory", false))).
-                    ToList();
+            return Collection.FindAs<Activity>(Query.And(Query.EQ("Owner._id", userId), Query.EQ("IsHistory", false))).ToList();
         }
 
         public List<Activity> Get()

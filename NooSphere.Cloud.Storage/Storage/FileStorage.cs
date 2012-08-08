@@ -26,22 +26,21 @@ namespace NooSphere.Cloud.Data.Storage
 {
     public class FileStorage
     {
-        private const string bucketName = "noosphere.activitycloud.files";
-
+        private const string BucketName = "noosphere.activitycloud.files";
         private const string RelativePathKey = "RelativePath";
         private const string CreationTimeKey = "CreationTime";
         private const string LastWriteTimeKey = "LastWriteTime";
         private const string SizeKey = "Size";
 
-        private readonly string AccessKey;
-        private readonly string AccessSecret;
+        private readonly string _accessKey;
+        private readonly string _accessSecret;
 
         #region Constructors
 
         public FileStorage(string accessKey, string accessSecret)
         {
-            AccessKey = accessKey;
-            AccessSecret = accessSecret;
+            _accessKey = accessKey;
+            _accessSecret = accessSecret;
         }
 
         #endregion
@@ -54,7 +53,7 @@ namespace NooSphere.Cloud.Data.Storage
             {
                 using (AmazonS3Client client = SetupClient())
                     return
-                        client.GetObject(new GetObjectRequest().WithBucketName(bucketName).WithKey(id)).ResponseStream;
+                        client.GetObject(new GetObjectRequest().WithBucketName(BucketName).WithKey(id)).ResponseStream;
             }
             catch (AmazonS3Exception)
             {
@@ -62,8 +61,7 @@ namespace NooSphere.Cloud.Data.Storage
             }
         }
 
-        public bool Upload(string id, string relativePath, DateTime creationTime, DateTime lastWriteTime, int size,
-                           Stream stream)
+        public bool Upload(string id, string relativePath, DateTime creationTime, DateTime lastWriteTime, long size, Stream stream)
         {
             var metadata = new NameValueCollection();
             metadata.Add(RelativePathKey, relativePath);
@@ -75,18 +73,18 @@ namespace NooSphere.Cloud.Data.Storage
             req.WithInputStream(stream);
             req.WithMetaData(metadata);
 
-            using (AmazonS3Client client = SetupClient())
-                client.PutObject(req.WithBucketName(bucketName).WithKey(id));
+            using (var client = SetupClient())
+                client.PutObject(req.WithBucketName(BucketName).WithKey(id));
 
             return true;
         }
 
         public DateTime LastWriteTime(string id)
         {
-            using (AmazonS3Client client = SetupClient())
+            using (var client = SetupClient())
                 return
                     DateTime.Parse(
-                        client.GetObject(new GetObjectRequest().WithBucketName(bucketName).WithKey(id)).Metadata[
+                        client.GetObject(new GetObjectRequest().WithBucketName(BucketName).WithKey(id)).Metadata[
                             LastWriteTimeKey]);
         }
 
@@ -102,7 +100,7 @@ namespace NooSphere.Cloud.Data.Storage
                                    CommunicationProtocol = Protocol.HTTP
                                };
 
-            return new AmazonS3Client(AccessKey, AccessSecret, S3Config);
+            return new AmazonS3Client(_accessKey, _accessSecret, S3Config);
         }
 
         #endregion
