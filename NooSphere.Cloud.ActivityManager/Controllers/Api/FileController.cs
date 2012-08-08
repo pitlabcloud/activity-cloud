@@ -33,7 +33,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 {
     public class FileController : BaseController
     {
-        private readonly FileStorage FileStorage = new FileStorage(
+        private readonly FileStorage _fileStorage = new FileStorage(
             ConfigurationManager.AppSettings["AmazonAccessKeyId"],
             ConfigurationManager.AppSettings["AmazonSecretAccessKey"]);
 
@@ -50,7 +50,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         public HttpResponseMessage Get(Guid activityId, Guid actionId, Guid resourceId)
         {
             var response = new HttpResponseMessage();
-            Stream stream = FileStorage.Download(GenerateId(activityId, actionId, resourceId));
+            var stream = _fileStorage.Download(GenerateId(activityId, actionId, resourceId));
             if (stream != null)
             {
                 response.StatusCode = HttpStatusCode.OK;
@@ -89,7 +89,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             var task = Request.Content.ReadAsStreamAsync();
             var result = task.ContinueWith(o =>
             {
-                if (FileStorage.Upload(GenerateId(r), relativePath, DateTime.Parse(creationTime),
+                if (_fileStorage.Upload(GenerateId(r), relativePath, DateTime.Parse(creationTime),
                     DateTime.Parse(lastWriteTime), size, task.Result))
                     Notifier.NotifyGroup(activityId, NotificationType.FileDownload, r);
                     return new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
@@ -113,7 +113,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                     Notifier.NotifyGroup(activity.Id, NotificationType.FileDelete, resource);
                 else if (type == SyncType.Updated)
                 {
-                    if (DateTime.Parse(resource.LastWriteTime) > FileStorage.LastWriteTime(GenerateId(resource)))
+                    if (DateTime.Parse(resource.LastWriteTime) > _fileStorage.LastWriteTime(GenerateId(resource)))
                         Notifier.NotifyGroup(ConnectionId, NotificationType.FileUpload, resource);
                 }
             }
