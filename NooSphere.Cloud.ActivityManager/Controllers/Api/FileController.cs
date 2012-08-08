@@ -67,30 +67,21 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         /// <param name="activityId"> Guid representation of the activity Id. </param>
         /// <param name="actionId"> Guid representation of the action Id. </param>
         /// <param name="resourceId"> Guid representation of the resource Id. </param>
-        /// <param name="size"> Size of the resource. </param>
-        /// <param name="creationTime"> Creation time of the resource. </param>
-        /// <param name="lastWriteTime"> Last write time of the resource. </param>
-        /// <param name="relativePath"> Relative path including the filename. </param>
         [RequireUser]
-        public Task<HttpResponseMessage> Post(Guid activityId, Guid actionId, Guid resourceId, int size,
-                                              string creationTime, string lastWriteTime, string relativePath)
+        public Task<HttpResponseMessage> Post(Guid activityId, Guid actionId, Guid resourceId)
         {
+
             var r = new Resource
                         {
                             Id = resourceId,
                             ActivityId = activityId,
                             ActionId = actionId,
-                            Size = size,
-                            CreationTime = creationTime,
-                            LastWriteTime = lastWriteTime,
-                            RelativePath = relativePath
                         };
 
             var task = Request.Content.ReadAsStreamAsync();
             var result = task.ContinueWith(o =>
             {
-                if (_fileStorage.Upload(GenerateId(r), relativePath, DateTime.Parse(creationTime),
-                    DateTime.Parse(lastWriteTime), size, task.Result))
+                if (_fileStorage.Upload(GenerateId(r), task.Result))
                     Notifier.NotifyGroup(activityId, NotificationType.FileDownload, r);
                     return new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
             });
