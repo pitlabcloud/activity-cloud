@@ -36,21 +36,21 @@ namespace NooSphere.Core.ActivityModel
 
         private void InitializeProperties()
         {
-            Actions = new List<Action>();
             Participants = new List<User>();
             History = new List<Guid>();
             IsHistory = false;
+            Resources = new List<Resource>();
         }
 
         #endregion
 
         #region Properties
 
-        public List<Action> Actions { get; set; }
         public List<User> Participants { get; set; }
         public User Owner { get; set; }
         public bool IsHistory { get; set; }
         public List<Guid> History { get; set; }
+        public List<Resource> Resources { get; set; }
 
         #endregion
     }

@@ -162,9 +162,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             foreach (var activity in activities)
             {
                 Notifier.Subscribe(ConnectionId, activity.Id);
-                if (activity.Actions != null && activity.Actions.Count > 0)
-                    foreach (var resource in activity.Actions.SelectMany(action => action.Resources))
-                        Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDownload, resource);
+                foreach (var resource in activity.Resources)
+                    Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDownload, resource);
             }
             return ReturnObject(activities);
         }
@@ -229,7 +228,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 _activityStorage.Remove(activityId);
                 if (CurrentUserId != Guid.Empty)
                 {
-                    foreach (var resource in activity.Actions.SelectMany(action => action.Resources))
+                    foreach (var resource in activity.Resources)
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDelete, resource);
                     Notifier.NotifyAll(NotificationType.ActivityDeleted, new {Id = activityId});
                 }

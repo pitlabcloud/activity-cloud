@@ -43,14 +43,13 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         ///   Download the resource.
         /// </summary>
         /// <param name="activityId"> Guid representation of the activity Id. </param>
-        /// <param name="actionId"> Guid representation of the action Id. </param>
         /// <param name="resourceId"> Guid representation of the resource Id. </param>
         /// <returns> byte[] of the given resource </returns>
         [RequireUser]
-        public HttpResponseMessage Get(Guid activityId, Guid actionId, Guid resourceId)
+        public HttpResponseMessage Get(Guid activityId, Guid resourceId)
         {
             var response = new HttpResponseMessage();
-            var stream = _fileStorage.Download(GenerateId(activityId, actionId, resourceId));
+            var stream = _fileStorage.Download(GenerateId(activityId, resourceId));
             if (stream != null)
             {
                 response.StatusCode = HttpStatusCode.OK;
@@ -65,17 +64,15 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         ///   Upload the resource
         /// </summary>
         /// <param name="activityId"> Guid representation of the activity Id. </param>
-        /// <param name="actionId"> Guid representation of the action Id. </param>
         /// <param name="resourceId"> Guid representation of the resource Id. </param>
         [RequireUser]
-        public Task<HttpResponseMessage> Post(Guid activityId, Guid actionId, Guid resourceId)
+        public Task<HttpResponseMessage> Post(Guid activityId, Guid resourceId)
         {
 
             var r = new Resource
                         {
                             Id = resourceId,
-                            ActivityId = activityId,
-                            ActionId = actionId,
+                            ActivityId = activityId
                         };
 
             var task = Request.Content.ReadAsStreamAsync();
@@ -96,7 +93,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [NonAction]
         public void Sync(Activity activity, SyncType type)
         {
-            foreach (Resource resource in activity.Actions.SelectMany(a => a.Resources))
+            foreach (Resource resource in activity.Resources)
             {
                 if (type == SyncType.Added)
                     Notifier.NotifyGroup(activity.Id, NotificationType.FileUpload, resource);
@@ -114,14 +111,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 
         #region Private Methods
 
-        private string GenerateId(Guid activityId, Guid actionId, Guid resourceId)
+        private string GenerateId(Guid activityId, Guid resourceId)
         {
-            return "Activities/" + activityId + "/Actions/" + actionId + "/Resources/" + resourceId;
+            return "Activities/" + activityId + "/Resources/" + resourceId;
         }
 
         private string GenerateId(Resource r)
         {
-            return "Activities/" + r.ActivityId + "/Actions/" + r.ActionId + "/Resources/" + r.Id;
+            return "Activities/" + r.ActivityId + "/Resources/" + r.Id;
         }
 
         #endregion

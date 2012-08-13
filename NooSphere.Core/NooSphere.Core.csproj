@@ -62,7 +62,6 @@
     <Compile Include="ActivityModel\Device.cs" />
     <Compile Include="ActivityModel\FriendRequest.cs" />
     <Compile Include="ActivityModel\Resource.cs" />
-    <Compile Include="ActivityModel\Action.cs" />
     <Compile Include="ActivityModel\Activity.cs" />
     <Compile Include="ActivityModel\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

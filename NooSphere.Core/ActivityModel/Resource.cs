@@ -25,7 +25,6 @@ namespace NooSphere.Core.ActivityModel
         #region Properties
 
         public Guid ActivityId { get; set; }
-        public Guid ActionId { get; set; }
         public string FileName { get; set; }
         public int Size { get; set; }
         public string CreationTime { get; set; }
