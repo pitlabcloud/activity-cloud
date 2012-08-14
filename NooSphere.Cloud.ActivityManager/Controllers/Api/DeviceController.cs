@@ -48,6 +48,9 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                     _activityController = new ActivityController();
                     _friendController = new FriendController();
 
+                    // Subscribe to connection
+                    Notifier.Subscribe(ConnectionId, ConnectionId);
+
                     // Subscribe to user
                     Notifier.Subscribe(ConnectionId, userId);
 

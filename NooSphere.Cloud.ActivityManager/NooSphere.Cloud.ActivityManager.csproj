@@ -162,7 +162,6 @@
     <Compile Include="App_Start\MongoConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Authentication\RequireUserAttribute.cs" />
-    <Compile Include="Controllers\Api\ActionController.cs" />
     <Compile Include="Controllers\Api\ActivityController.cs" />
     <Compile Include="Controllers\Api\UserStatusController.cs" />
     <Compile Include="Controllers\Api\BaseController.cs" />

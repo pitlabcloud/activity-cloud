@@ -26,7 +26,6 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
         public static void RegisterMongoMap()
         {
             BsonClassMap.RegisterClassMap<Activity>();
-            BsonClassMap.RegisterClassMap<Action>();
             BsonClassMap.RegisterClassMap<Device>();
             BsonClassMap.RegisterClassMap<FriendRequest>();
             BsonClassMap.RegisterClassMap<Resource>();

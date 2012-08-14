@@ -43,17 +43,10 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
                 defaults: new {controller = "Activity", activityId = RouteParameter.Optional}
                 );
 
-            // REST Api routing (Actions)
-            routes.MapHttpRoute(
-                name: "Api.Activities.Actions",
-                routeTemplate: "Api/Activities/{activityId}/Actions/{actionId}",
-                defaults: new {controller = "Action", actionId = RouteParameter.Optional}
-                );
-
             // REST Api routing (Resources)
             routes.MapHttpRoute(
                 name: "Api.Resources",
-                routeTemplate: "Api/Activities/{activityId}/Actions/{actionId}/Resources/{resourceId}",
+                routeTemplate: "Api/Activities/{activityId}/Resources/{resourceId}",
                 defaults: new {controller = "File", resourceId = RouteParameter.Optional}
                 );
 

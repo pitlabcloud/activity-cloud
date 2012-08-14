@@ -58,21 +58,19 @@
             <param name="userId"> Guid representation of a userId. </param>
             <returns> Returns true if device was unregistered, false if device is not registered to user. </returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FileController.Get(System.Guid,System.Guid,System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FileController.Get(System.Guid,System.Guid)">
             <summary>
               Download the resource.
             </summary>
             <param name="activityId"> Guid representation of the activity Id. </param>
-            <param name="actionId"> Guid representation of the action Id. </param>
             <param name="resourceId"> Guid representation of the resource Id. </param>
             <returns> byte[] of the given resource </returns>
         </member>
-        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FileController.Post(System.Guid,System.Guid,System.Guid)">
+        <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FileController.Post(System.Guid,System.Guid)">
             <summary>
               Upload the resource
             </summary>
             <param name="activityId"> Guid representation of the activity Id. </param>
-            <param name="actionId"> Guid representation of the action Id. </param>
             <param name="resourceId"> Guid representation of the resource Id. </param>
         </member>
         <member name="M:NooSphere.Cloud.ActivityManager.Controllers.Api.FriendController.Get(System.Guid)">
