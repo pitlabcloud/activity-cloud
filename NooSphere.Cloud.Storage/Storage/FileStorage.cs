@@ -27,12 +27,8 @@ namespace NooSphere.Cloud.Data.Storage
     public class FileStorage
     {
         private const string BucketName = "noosphere.activitycloud.files";
-        private const string RelativePathKey = "RelativePath";
-        private const string CloudPathKey = "CloudPath";
-        private const string FilenameKey = "Filename";
         private const string CreationTimeKey = "CreationTime";
         private const string LastWriteTimeKey = "LastWriteTime";
-        private const string SizeKey = "Size";
 
         private readonly string _accessKey;
         private readonly string _accessSecret;
@@ -53,7 +49,7 @@ namespace NooSphere.Cloud.Data.Storage
         {
             try
             {
-                using (AmazonS3Client client = SetupClient())
+                using (var client = SetupClient())
                     return
                         client.GetObject(new GetObjectRequest().WithBucketName(BucketName).WithKey(id)).ResponseStream;
             }
@@ -96,10 +92,19 @@ namespace NooSphere.Cloud.Data.Storage
         public DateTime LastWriteTime(string id)
         {
             using (var client = SetupClient())
-                return
-                    DateTime.Parse(
-                        client.GetObject(new GetObjectRequest().WithBucketName(BucketName).WithKey(id)).Metadata[
-                            LastWriteTimeKey]);
+            {
+                try {
+                    var request = new GetObjectMetadataRequest().WithBucketName(BucketName).WithKey(id);
+                    var response = client.GetObjectMetadata(request);
+                    var date = response.LastModified;
+                    var lastwrite = response.Metadata[LastWriteTimeKey];
+                    return DateTime.Parse(lastwrite);
+                }
+                catch
+                {
+                }
+            }
+            return DateTime.MinValue;
         }
 
         #endregion

@@ -61,10 +61,8 @@
     <Compile Include="Registry\FriendRequstRegistry.cs" />
     <Compile Include="Storage\ActivityStorage.cs" />
     <Compile Include="Storage\BaseStorage.cs" />
-    <Compile Include="Storage\ActionStorage.cs" />
     <Compile Include="Storage\FileStorage.cs" />
     <Compile Include="Storage\UserStorage.cs" />
-    <Compile Include="Registry\ActionRegistry.cs" />
     <Compile Include="Registry\ActivityRegistry.cs" />
     <Compile Include="Registry\DeviceRegistry.cs" />
     <Compile Include="Registry\BaseRegistry.cs" />

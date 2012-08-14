@@ -64,18 +64,12 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         #region Protected Methods
         protected bool IsOwner(Activity activity)
         {
-            if (activity.Owner.Id == CurrentUser.Id)
-                return true;
-            else
-                return false;
+            return activity.Owner.Id == CurrentUser.Id;
         }
 
         protected bool IsParticipant(Activity activity)
         {
-            if (activity.Participants.Count(p => p.Id == CurrentUser.Id) == 1)
-                return true;
-            else
-                return false;
+            return activity.Participants.Count(p => p.Id == CurrentUser.Id) == 1;
         }
 
         #endregion

@@ -50,14 +50,12 @@
                                 case NotificationType.FileUpload:
                                 case NotificationType.FileDelete:
                                     r = new Resource();
-                                    r.ActionId = Guid.NewGuid();
                                     r.ActivityId = Guid.NewGuid();
                                     r.Id = Guid.NewGuid();
                                     r.Name = "My document";
                                     r.Size = 7234;
                                     r.CreationTime = DateTime.UtcNow.ToString("u");
                                     r.LastWriteTime = DateTime.UtcNow.ToString("u");
-                                    r.RelativePath = "document.pdf";
                                     obj = JObject.FromObject(r);
                                     @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = obj})
                                     break;
