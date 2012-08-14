@@ -199,7 +199,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 _activityStorage.Add(data.ToObject<Activity>().Id, data);
                 if (!asHistory) Notifier.Subscribe(ConnectionId, activity.Id);
                 Notifier.NotifyGroup(activity.Id, type, data);
-                if (!asHistory) _fileController.Sync(activity, SyncType.Added);
+                if (!asHistory) _fileController.Sync(activity, SyncType.Added, ConnectionId);
                 return true;
             }
             return false;
@@ -213,7 +213,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             {
                 _activityStorage.Add(data.ToObject<Activity>().Id, data);
                 Notifier.NotifyGroup(activity.Id, type, data);
-                _fileController.Sync(activity, SyncType.Updated);
+                _fileController.Sync(activity, SyncType.Updated, ConnectionId);
                 return true;
             }
             return false;
@@ -232,7 +232,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDelete, resource);
                     Notifier.NotifyAll(NotificationType.ActivityDeleted, new {Id = activityId});
                 }
-                _fileController.Sync(activity, SyncType.Removed);
+                _fileController.Sync(activity, SyncType.Removed, ConnectionId);
                 return true;
             }
             return false;

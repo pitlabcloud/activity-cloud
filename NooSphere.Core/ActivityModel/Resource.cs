@@ -26,9 +26,9 @@ namespace NooSphere.Core.ActivityModel
 
         public Guid ActivityId { get; set; }
         public string FileName { get; set; }
-        public int Size { get; set; }
-        public string CreationTime { get; set; }
-        public string LastWriteTime { get; set; }
+        public long Size { get; set; }
+        public DateTime CreationTime { get; set; }
+        public DateTime LastWriteTime { get; set; }
 
         #endregion
     }

@@ -68,22 +68,19 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [RequireUser]
         public Task<HttpResponseMessage> Post(Guid activityId, Guid resourceId)
         {
-
-            var r = new Resource
-                        {
-                            Id = resourceId,
-                            ActivityId = activityId
-                        };
-
-            var task = Request.Content.ReadAsStreamAsync();
-            var result = task.ContinueWith(o =>
-            {
-                if (_fileStorage.Upload(GenerateId(r), task.Result))
-                    Notifier.NotifyGroup(activityId, NotificationType.FileDownload, r);
+            var resource = new ActivityController().GetActivity(activityId).Resources.SingleOrDefault(r => r.Id == resourceId);
+            if(resource != null) {
+                var task = Request.Content.ReadAsStreamAsync();
+                var result = task.ContinueWith(o =>
+                {
+                    if (_fileStorage.Upload(GenerateId(resource), task.Result))
+                        Notifier.NotifyGroup(activityId, NotificationType.FileDownload, resource);
                     return new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
-            });
+                });
 
-            return result;
+                return result;
+            }
+            return null;
         }
 
         #endregion
@@ -91,18 +88,22 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         #region Public Methods
 
         [NonAction]
-        public void Sync(Activity activity, SyncType type)
+        public void Sync(Activity activity, SyncType type, Guid connectionId)
         {
-            foreach (Resource resource in activity.Resources)
+            foreach (var resource in activity.Resources)
             {
-                if (type == SyncType.Added)
-                    Notifier.NotifyGroup(activity.Id, NotificationType.FileUpload, resource);
-                else if (type == SyncType.Removed)
-                    Notifier.NotifyGroup(activity.Id, NotificationType.FileDelete, resource);
-                else if (type == SyncType.Updated)
+                switch (type)
                 {
-                    if (DateTime.Parse(resource.LastWriteTime) > _fileStorage.LastWriteTime(GenerateId(resource)))
-                        Notifier.NotifyGroup(ConnectionId, NotificationType.FileUpload, resource);
+                    case SyncType.Added:
+                        Notifier.NotifyGroup(connectionId, NotificationType.FileUpload, resource);
+                        break;
+                    case SyncType.Removed:
+                        Notifier.NotifyGroup(activity.Id, NotificationType.FileDelete, resource);
+                        break;
+                    case SyncType.Updated:
+                        if (resource.LastWriteTime > _fileStorage.LastWriteTime(GenerateId(resource)))
+                            Notifier.NotifyGroup(connectionId, NotificationType.FileUpload, resource);
+                        break;
                 }
             }
         }
@@ -111,14 +112,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
 
         #region Private Methods
 
-        private string GenerateId(Guid activityId, Guid resourceId)
+        private static string GenerateId(Guid activityId, Guid resourceId)
         {
-            return "Activities/" + activityId + "/Resources/" + resourceId;
+            return activityId + "/" + resourceId;
         }
 
-        private string GenerateId(Resource r)
+        private static string GenerateId(Resource r)
         {
-            return "Activities/" + r.ActivityId + "/Resources/" + r.Id;
+            return r.ActivityId + "/" + r.Id;
         }
 
         #endregion
