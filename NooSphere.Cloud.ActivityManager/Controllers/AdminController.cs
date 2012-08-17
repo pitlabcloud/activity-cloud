@@ -58,7 +58,14 @@ namespace NooSphere.Cloud.ActivityManager.Controllers
         public ActionResult Delete(Guid id)
         {
             UserController.RemoveUser(id);
-            return RedirectToAction("Index");
+            return RedirectToAction("Users");
+        }
+
+        public ActionResult DeletePlusActivities(Guid id)
+        {
+            ActivityController.ClearUser(id);
+            UserController.RemoveUser(id);
+            return RedirectToAction("Users");
         }
     }
 }

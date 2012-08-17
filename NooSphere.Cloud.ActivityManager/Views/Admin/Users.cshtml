@@ -16,7 +16,8 @@
             <tr>
                 <td>@item["Name"]</td>
                 <td>@item["Email"]</td>
-                <td>@Html.ActionLink("Delete", "Delete", new {id = item["Id"].ToObject<Guid>()})</td>
+                <td>@Html.ActionLink("Delete User", "Delete", new {id = item["Id"].ToObject<Guid>()})</td>
+                <td>@Html.ActionLink("Delete User + Activities", "DeletePlusActivities", new {id = item["Id"].ToObject<Guid>()})</td>
             </tr>
         }
     </table>

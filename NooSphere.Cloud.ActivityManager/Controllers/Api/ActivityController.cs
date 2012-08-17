@@ -181,12 +181,17 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         }
 
         [NonAction]
+        public void ClearUser(Guid userId)
+        {
+            foreach (var activity in _activityRegistry.GetOnUser(userId))
+                RemoveActivity(NotificationType.ActivityDeleted, activity.Id);
+        }
+
+        [NonAction]
         public void Clear()
         {
             foreach (var activity in _activityRegistry.Get())
-            {
                 RemoveActivity(NotificationType.ActivityDeleted, activity.Id);
-            }
         }
 
         [NonAction]
