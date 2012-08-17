@@ -63,6 +63,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                     {
                         Notifier.Subscribe(ConnectionId, Guid.Parse(activity["Id"].ToString()));
                         Notifier.NotifyGroup(ConnectionId, NotificationType.ActivityAdded, activity);
+                        foreach(var resource in activity["Resources"])
+                            Notifier.NotifyGroup(ConnectionId, NotificationType.FileDownload, resource);
                     }
 
                     // Push pending friend requests
