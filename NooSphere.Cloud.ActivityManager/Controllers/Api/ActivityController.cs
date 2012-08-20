@@ -235,7 +235,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 {
                     foreach (var resource in activity.Resources)
                         Notifier.NotifyGroup(CurrentUserId, NotificationType.FileDelete, resource);
-                    Notifier.NotifyAll(NotificationType.ActivityDeleted, new {Id = activityId});
+                    Notifier.NotifyGroup(activityId, NotificationType.ActivityDeleted, new {Id = activityId});
                 }
                 _fileController.Sync(activity, SyncType.Removed, ConnectionId);
                 return true;
