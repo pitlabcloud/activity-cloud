@@ -42,7 +42,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [RequireUser]
         public bool Post(Guid activityId, Guid participantId)
         {
-            if (activityId != null && participantId != null)
+            try
             {
                 JObject activity = ActivityController.GetExtendedActivity(activityId);
                 JObject participant = UserController.GetExtendedUser(participantId);
@@ -56,8 +56,10 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                                      new {ActivityId = activityId, Participant = participant});
                 Notifier.NotifyGroup(participantId, NotificationType.ActivityAdded, activity);
                 return true;
+            } catch(Exception)
+            {
+                return false;
             }
-            return false;
         }
 
         /// <summary>
