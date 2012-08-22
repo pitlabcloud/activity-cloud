@@ -202,6 +202,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             if (_activityRegistry.Add(activity))
             {
                 _activityStorage.Add(data.ToObject<Activity>().Id, data);
+                PutParticipantsOnSubscription(activity);
+
                 if (!asHistory) Notifier.Subscribe(ConnectionId, activity.Id);
                 Notifier.NotifyGroup(activity.Id, type, data);
                 if (!asHistory) _fileController.Sync(activity, SyncType.Added, ConnectionId);
@@ -217,6 +219,8 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             if (_activityRegistry.Upsert(activity.Id, activity))
             {
                 _activityStorage.Add(data.ToObject<Activity>().Id, data);
+                PutParticipantsOnSubscription(activity);
+
                 Notifier.NotifyGroup(activity.Id, type, data);
                 _fileController.Sync(activity, SyncType.Updated, ConnectionId);
                 return true;
@@ -246,7 +250,13 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         #endregion
 
         #region Private Methods
-
+        private void PutParticipantsOnSubscription(Activity activity)
+        {
+            // Add subscription for participants
+            foreach (var connectionId in activity.Participants.Where(p => p.Id != CurrentUserId).
+                SelectMany(participant => DeviceRegistry.ConnectionIds(participant.Id)))
+                Notifier.Subscribe(connectionId, activity.Id);
+        }
         private List<JObject> ReturnObject(IEnumerable<Activity> activities)
         {
             return activities.Select(ReturnObject).ToList();

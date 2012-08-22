@@ -62,6 +62,11 @@ namespace NooSphere.Cloud.Data.Registry
             return Collection.FindAs<Device>(Query.EQ("UserId", userId)).ToList();
         }
 
+        public List<Guid> ConnectionIds(Guid userId)
+        {
+            return Collection.FindAs<Device>(Query.EQ("UserId", userId)).Select(d => d.ConnectionId).ToList();
+        }
+
         public bool IsUserConnected(Guid connectionId)
         {
             MongoCursor<Device> device =
