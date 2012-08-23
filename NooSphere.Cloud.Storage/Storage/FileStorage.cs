@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 
@@ -45,13 +46,17 @@ namespace NooSphere.Cloud.Data.Storage
 
         #region Public Methods
 
-        public Stream Download(string id)
+        public Task<Stream> DownloadFileAsync(string id)
         {
-            try
-            {
-                using (var client = SetupClient())
-                    return
-                        client.GetObject(new GetObjectRequest().WithBucketName(BucketName).WithKey(id)).ResponseStream;
+            try {
+                using (var client = SetupClient()) {
+                    var response = Task.Factory.FromAsync<GetObjectRequest, GetObjectResponse>(
+                        client.BeginGetObject, 
+                        client.EndGetObject, 
+                        new GetObjectRequest().WithBucketName(BucketName).WithKey(id), null);
+
+                    return response.ContinueWith(r => r.Result.ResponseStream);
+                }
             }
             catch (AmazonS3Exception e)
             {
@@ -59,34 +64,44 @@ namespace NooSphere.Cloud.Data.Storage
             }
         }
 
-        public bool Upload(string id, Stream stream)
+        public Task<bool> Upload(string id, Stream stream)
         {
-            NameValueCollection metadata;
-            if(Exists(id))
-                metadata = new NameValueCollection
-                               {
-                                   {LastWriteTimeKey, DateTime.UtcNow.ToString("u")}
-                               };
-            else
-                metadata = new NameValueCollection
-                               {
-                                   {CreationTimeKey, DateTime.UtcNow.ToString("u")},
-                                   {LastWriteTimeKey, DateTime.UtcNow.ToString("u")}
-                               };
+            try{
+                NameValueCollection metadata;
+                if(Exists(id))
+                    metadata = new NameValueCollection
+                                   {
+                                       {LastWriteTimeKey, DateTime.UtcNow.ToString("u")}
+                                   };
+                else
+                    metadata = new NameValueCollection
+                                   {
+                                       {CreationTimeKey, DateTime.UtcNow.ToString("u")},
+                                       {LastWriteTimeKey, DateTime.UtcNow.ToString("u")}
+                                   };
 
-            var req = new PutObjectRequest
-                          {
-                              BucketName = BucketName,
-                              Key = id,
-                              InputStream = stream,
-                              Timeout = -1,
-                              ReadWriteTimeout = 300000
-                          };
+                var req = new PutObjectRequest
+                              {
+                                  BucketName = BucketName,
+                                  Key = id,
+                                  InputStream = stream,
+                                  Timeout = -1,
+                                  ReadWriteTimeout = 300000
+                              };
 
-            using (var client = SetupClient())
-                client.PutObject(req.WithMetaData(metadata));
+                using (var client = SetupClient())
+                {
+                    var response = Task.Factory.FromAsync<PutObjectRequest, PutObjectResponse>(
+                        client.BeginPutObject,
+                        client.EndPutObject,
+                        req.WithMetaData(metadata), null);
 
-            return true;
+                    return response.ContinueWith(r => true);
+                }
+            } catch(AmazonS3Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public DateTime LastWriteTime(string id)
@@ -102,9 +117,9 @@ namespace NooSphere.Cloud.Data.Storage
                 }
                 catch
                 {
+                    return DateTime.MinValue;
                 }
             }
-            return DateTime.MinValue;
         }
 
         #endregion
