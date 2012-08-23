@@ -46,22 +46,27 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         /// <param name="resourceId"> Guid representation of the resource Id. </param>
         /// <returns> byte[] of the given resource </returns>
         [RequireUser]
-        public HttpResponseMessage Get(Guid activityId, Guid resourceId)
+        public Task<HttpResponseMessage> Get(Guid activityId, Guid resourceId)
         {
-            var response = new HttpResponseMessage();
-            try {
-                var stream = _fileStorage.Download(GenerateId(activityId, resourceId));
-                if (stream != null)
-                {
-                    response.StatusCode = HttpStatusCode.OK;
-                    response.Content = new StreamContent(stream);
-                }
+            try
+            {
+                var task = _fileStorage.DownloadFileAsync(GenerateId(activityId, resourceId));
+                var result = task.ContinueWith(o => new HttpResponseMessage
+                                                        {
+                                                            StatusCode = HttpStatusCode.OK,
+                                                            Content = new StreamContent(task.Result)
+                                                        });
+            
+            return result;
             } catch(Exception e)
             {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                response.Content = new StringContent(e.Message);
+                var response = new HttpResponseMessage
+                                   {
+                                       StatusCode = HttpStatusCode.InternalServerError,
+                                       Content = new StringContent(e.Message)
+                                   };
+                throw new HttpResponseException(response);
             }
-            return response;
         }
 
         /// <summary>
@@ -72,19 +77,42 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         [RequireUser]
         public Task<HttpResponseMessage> Post(Guid activityId, Guid resourceId)
         {
-            var resource = new ActivityController().GetActivity(activityId).Resources.SingleOrDefault(r => r.Id == resourceId);
-            if(resource != null) {
-                var task = Request.Content.ReadAsStreamAsync();
-                var result = task.ContinueWith(o =>
+            try {
+                var resource = new ActivityController().GetActivity(activityId).Resources.SingleOrDefault(r => r.Id == resourceId);
+                if(resource != null) {
+                    var task = Request.Content.ReadAsStreamAsync();
+                    var result = task.ContinueWith(o =>
+                                                       {
+                                                           var uploadTask = _fileStorage.Upload(GenerateId(resource), task.Result);
+                                                           return uploadTask.ContinueWith(u =>
+                                                                                       {
+                                                                                           if(u.Result)
+                                                                                           {
+                                                                                               Notifier.NotifyGroup(activityId, NotificationType.FileDownload, resource);
+                                                                                               return new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
+                                                                                           }
+                                                                                           throw new HttpResponseException(new HttpResponseMessage
+                                                                                                                               {
+                                                                                                                                   StatusCode = HttpStatusCode.NotFound,
+                                                                                                                                   Content = new StringContent("The resource was not uploaded.")
+                                                                                                                               });
+                                                                                       });
+                    });
+                    return result.Result;
+                }
+                throw new HttpResponseException(new HttpResponseMessage
                 {
-                    if (_fileStorage.Upload(GenerateId(resource), task.Result))
-                        Notifier.NotifyGroup(activityId, NotificationType.FileDownload, resource);
-                    return new HttpResponseMessage { StatusCode = HttpStatusCode.OK };
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("The resource was not found.")
                 });
-
-                return result;
+            } catch(Exception e)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent(e.Message)
+                });
             }
-            return null;
         }
 
         #endregion
