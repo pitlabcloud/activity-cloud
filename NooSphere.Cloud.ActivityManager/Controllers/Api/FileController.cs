@@ -49,14 +49,18 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         public HttpResponseMessage Get(Guid activityId, Guid resourceId)
         {
             var response = new HttpResponseMessage();
-            var stream = _fileStorage.Download(GenerateId(activityId, resourceId));
-            if (stream != null)
+            try {
+                var stream = _fileStorage.Download(GenerateId(activityId, resourceId));
+                if (stream != null)
+                {
+                    response.StatusCode = HttpStatusCode.OK;
+                    response.Content = new StreamContent(stream);
+                }
+            } catch(Exception e)
             {
-                response.StatusCode = HttpStatusCode.OK;
-                response.Content = new StreamContent(stream);
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.Content = new StringContent(e.Message);
             }
-            else
-                response.StatusCode = HttpStatusCode.NotFound;
             return response;
         }
 

@@ -53,9 +53,9 @@ namespace NooSphere.Cloud.Data.Storage
                     return
                         client.GetObject(new GetObjectRequest().WithBucketName(BucketName).WithKey(id)).ResponseStream;
             }
-            catch (AmazonS3Exception)
+            catch (AmazonS3Exception e)
             {
-                return null;
+                throw new Exception(e.Message);
             }
         }
 
