@@ -51,13 +51,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
             try
             {
                 var task = _fileStorage.DownloadFileAsync(GenerateId(activityId, resourceId));
-                var result = task.ContinueWith(o => new HttpResponseMessage
-                                                        {
-                                                            StatusCode = HttpStatusCode.OK,
-                                                            Content = new StreamContent(task.Result)
-                                                        });
-            
-            return result;
+                return task.ContinueWith(o => new HttpResponseMessage
+                                              {
+                                                  StatusCode = HttpStatusCode.OK,
+                                                  Content = new StreamContent(task.Result)
+                                              });
             } catch(Exception e)
             {
                 var response = new HttpResponseMessage
@@ -120,23 +118,27 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
         #region Public Methods
 
         [NonAction]
-        public void Sync(Activity activity, SyncType type, Guid connectionId)
+        public void Sync(SyncType type, Activity activity, Guid connectionId, Activity oldActivity = null)
         {
-            foreach (var resource in activity.Resources)
+            switch (type)
             {
-                switch (type)
-                {
-                    case SyncType.Added:
-                        Notifier.NotifyGroup(connectionId, NotificationType.FileUpload, resource);
-                        break;
-                    case SyncType.Removed:
-                        Notifier.NotifyGroup(activity.Id, NotificationType.FileDelete, resource);
-                        break;
-                    case SyncType.Updated:
-                        if (resource.LastWriteTime > _fileStorage.LastWriteTime(GenerateId(resource)))
-                            Notifier.NotifyGroup(connectionId, NotificationType.FileUpload, resource);
-                        break;
-                }
+                case SyncType.Added:
+                    foreach (var r in activity.Resources)
+                        Notifier.NotifyGroup(connectionId, NotificationType.FileUpload, r);
+                    break;
+                case SyncType.Removed:
+                    foreach (var r in activity.Resources)
+                        Notifier.NotifyGroup(connectionId, NotificationType.FileDelete, r);
+                    break;
+                case SyncType.Updated:
+                    if(oldActivity != null)
+                        foreach (var r in activity.Resources)
+                        {
+                            var oldR = oldActivity.Resources.SingleOrDefault(r2 => r2.Id == r.Id);
+                            if (oldR == null || r.LastWriteTime.ToUniversalTime() > oldR.LastWriteTime.ToUniversalTime())
+                                Notifier.NotifyGroup(connectionId, NotificationType.FileUpload, r);
+                        }
+                    break;
             }
         }
 
