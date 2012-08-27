@@ -205,7 +205,11 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
                 PutParticipantsOnSubscription(activity);
 
                 if (!asHistory) Notifier.Subscribe(ConnectionId, activity.Id);
-                Notifier.NotifyGroup(activity.Id, type, data);
+                // Notify owner and participants
+                Notifier.NotifyGroup(activity.Owner.Id, type, data);
+                foreach (var participant in activity.Participants)
+                    Notifier.NotifyGroup(participant.Id, type, data);
+
                 if (!asHistory) _fileController.Sync(SyncType.Added, activity, ConnectionId);
                 return true;
             }
