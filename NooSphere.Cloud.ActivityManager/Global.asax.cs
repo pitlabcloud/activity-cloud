@@ -20,6 +20,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using NooSphere.Cloud.ActivityManager.App_Start;
+using Microsoft.AspNet.SignalR;
 
 #endregion
 
@@ -35,7 +36,7 @@ namespace NooSphere.Cloud.ActivityManager
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             DocumentationConfig.RegisterDocumentation(GlobalConfiguration.Configuration.Services);
-            MessageBusConfig.RegisterMessageBus();
+            MessageBusConfig.RegisterMessageBus(GlobalHost.DependencyResolver);
             MongoConfig.RegisterMongoMap();
         }
     }
