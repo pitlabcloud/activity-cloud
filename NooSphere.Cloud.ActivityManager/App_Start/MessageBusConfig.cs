@@ -25,13 +25,13 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
 {
     public class MessageBusConfig
     {
-        public static void RegisterMessageBus()
+        public static void RegisterMessageBus(IDependencyResolver resolver)
         {
             string server = ConfigurationManager.AppSettings["redis.server"];
             string port = ConfigurationManager.AppSettings["redis.port"];
             string password = ConfigurationManager.AppSettings["redis.password"];
 
-            GlobalHost.DependencyResolver.UseRedis(server, Int32.Parse(port), password, new string[] { "ActivityCloud"});
+            resolver.UseRedis(server, Int32.Parse(port), password, new[] { "ActivityCloud"});
         }
     }
 }
