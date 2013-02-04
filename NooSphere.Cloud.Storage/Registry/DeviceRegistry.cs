@@ -29,7 +29,7 @@ namespace NooSphere.Cloud.Data.Registry
     {
         #region Constructors
 
-        public DeviceRegistry(string connectionString) : base(connectionString)
+        public DeviceRegistry(string connectionString, string db) : base(connectionString, db)
         {
         }
 
@@ -48,13 +48,13 @@ namespace NooSphere.Cloud.Data.Registry
         public bool ConnectUser(Guid connectionId, Guid userId)
         {
             return
-                Collection.Update(Query.EQ("ConnectionId", connectionId), Update.Set("UserId", userId), SafeMode.True).
+                Collection.Update(Query.EQ("ConnectionId", connectionId), Update.Set("UserId", userId), WriteConcern.Acknowledged).
                     Ok;
         }
 
         public bool DisconnectUser(Guid userId)
         {
-            return Collection.Update(Query.EQ("UserId", userId), Update.Unset("UserId"), SafeMode.True).Ok;
+            return Collection.Update(Query.EQ("UserId", userId), Update.Unset("UserId"), WriteConcern.Acknowledged).Ok;
         }
 
         public List<Device> ConnectedDevices(Guid userId)
@@ -77,7 +77,7 @@ namespace NooSphere.Cloud.Data.Registry
 
         public bool RemoveOnConnectionId(Guid connectionId)
         {
-            return Collection.Remove(Query.EQ("ConnectionId", connectionId), SafeMode.True).Ok;
+            return Collection.Remove(Query.EQ("ConnectionId", connectionId), WriteConcern.Acknowledged).Ok;
         }
 
         public List<Device> Get()
