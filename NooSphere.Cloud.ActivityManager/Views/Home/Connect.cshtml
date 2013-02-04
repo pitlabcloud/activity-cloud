@@ -6,11 +6,10 @@
     <hgroup>
         To connect to Activity Cloud, you need to install SignalR, which is broken up into a few package on NuGet:
         <ul>
-            <li>SignalR - A meta package that brings in SignalR.Server and SignalR.Js</li>
-            <li>SignalR.Server - Server side components needed to build SignalR endpoints</li>
-            <li>SignalR.Js - Javascript client for SignalR</li>
-            <li><b>SignalR.Client - .NET client for SignalR (you should install this)</b></li>
-            <li>SignalR.Ninject - Ninject dependeny resolver for SignalR</li>
+            <li><b>Microsoft.AspNet.SignalR - A meta package that brings in everything you need to run it on IIS and ASP.NET (you should install this)</b></li>
+            <li>Microsoft.AspNet.SignalR.Core - Server side components needed to build SignalR endpoints</li>
+            <li>Microsoft.AspNet.SignalR.Js - Javascript client for SignalR</li>
+            <li>Microsoft.AspNet.SignalR.Client - .NET client for SignalR (includes WinRT, Windows Phone 8 and Silverlight5 clients)</li>
         </ul>
         Then the code is dead simple. First you connect to Activity Cloud, and then you start the connection. If connection is obtained you set up a handler for receiving data.
         Here shown in .NET:
