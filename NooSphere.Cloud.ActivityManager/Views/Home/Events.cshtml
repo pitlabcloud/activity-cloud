@@ -54,8 +54,8 @@
                                     r.Id = Guid.NewGuid();
                                     r.Name = "My document";
                                     r.Size = 7234;
-                                    r.CreationTime = DateTime.UtcNow.ToString("u");
-                                    r.LastWriteTime = DateTime.UtcNow.ToString("u");
+                                    r.CreationTime = DateTime.UtcNow;
+                                    r.LastWriteTime = DateTime.UtcNow;
                                     obj = JObject.FromObject(r);
                                     @Html.Partial("FormattedJson", new {Event = notificationType.ToString(), Data = obj})
                                     break;

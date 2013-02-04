@@ -8,7 +8,7 @@
 
     var act = new Activity {Name = "My activity", Id = Guid.NewGuid(), Owner = u};
 
-    var r = new Resource {Name = "My resource", FileName = "My document.pdf", Id = Guid.NewGuid(), ActivityId = act.Id, Size = 34325, CreationTime = DateTime.UtcNow.ToString("u"), LastWriteTime = DateTime.UtcNow.ToString("u")};
+    var r = new Resource {Name = "My resource", FileName = "My document.pdf", Id = Guid.NewGuid(), ActivityId = act.Id, Size = 34325, CreationTime = DateTime.UtcNow, LastWriteTime = DateTime.UtcNow};
 
     act.Resources.Add(r);
 }
