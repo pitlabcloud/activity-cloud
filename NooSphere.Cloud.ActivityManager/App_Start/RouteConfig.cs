@@ -30,10 +30,7 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             // Persistent Event Connections
-            routes.MapConnection<EventDispatcher>(
-                name: "Api.Connect",
-                url: "Api/Connect/{*operation}"
-                );
+            routes.MapConnection<EventDispatcher>("Api.Connect", "Api/Connect");
 
             // REST Api routing (Activities)
             routes.MapHttpRoute(
