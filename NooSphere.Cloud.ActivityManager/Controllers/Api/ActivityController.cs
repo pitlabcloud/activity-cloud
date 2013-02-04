@@ -37,7 +37,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
     public class ActivityController : BaseController
     {
         private readonly ActivityRegistry _activityRegistry =
-            new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
+            new ActivityRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"], ConfigurationManager.AppSettings["MongoDb"]);
 
         private readonly ActivityStorage _activityStorage =
             new ActivityStorage(ConfigurationManager.AppSettings["AmazonAccessKeyId"],

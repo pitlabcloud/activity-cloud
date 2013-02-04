@@ -14,10 +14,10 @@
 
 #region
 
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Redis;
 using System;
 using System.Configuration;
-using SignalR;
-using SignalR.Redis;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
             string port = ConfigurationManager.AppSettings["redis.port"];
             string password = ConfigurationManager.AppSettings["redis.password"];
 
-            GlobalHost.DependencyResolver.UseRedis(server, Int32.Parse(port), password, "ActivityCloud");
+            GlobalHost.DependencyResolver.UseRedis(server, Int32.Parse(port), password, new string[] { "ActivityCloud"});
         }
     }
 }

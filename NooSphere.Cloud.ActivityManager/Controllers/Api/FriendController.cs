@@ -32,7 +32,7 @@ namespace NooSphere.Cloud.ActivityManager.Controllers.Api
     public class FriendController : BaseController
     {
         private readonly FriendRequestRegistry FriendRequestRegistry =
-            new FriendRequestRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
+            new FriendRequestRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"], ConfigurationManager.AppSettings["MongoDb"]);
 
         private readonly UserController UserController = new UserController();
 

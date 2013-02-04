@@ -29,7 +29,7 @@ namespace NooSphere.Cloud.Data.Registry
     {
         #region Constructors
 
-        public ActivityRegistry(string connectionString) : base(connectionString)
+        public ActivityRegistry(string connectionString, string db) : base(connectionString, db)
         {
         }
 

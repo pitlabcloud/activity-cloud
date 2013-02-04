@@ -29,7 +29,7 @@ namespace NooSphere.Cloud.Data.Registry
     {
         #region Constructors
 
-        public FriendRequestRegistry(string connectionString) : base(connectionString)
+        public FriendRequestRegistry(string connectionString, string db) : base(connectionString, db)
         {
         }
 
@@ -63,13 +63,13 @@ namespace NooSphere.Cloud.Data.Registry
         {
             if (!Exists(userId, friendId)) return false;
             return
-                Collection.Remove(Query.And(Query.EQ("UserId", userId), Query.EQ("FriendId", friendId)), SafeMode.True).
+                Collection.Remove(Query.And(Query.EQ("UserId", userId), Query.EQ("FriendId", friendId)), WriteConcern.Acknowledged).
                     Ok;
         }
 
         public bool Remove(Guid friendRequestId)
         {
-            return Collection.Remove(Query.EQ("_id", friendRequestId), SafeMode.True).Ok;
+            return Collection.Remove(Query.EQ("_id", friendRequestId), WriteConcern.Acknowledged).Ok;
         }
 
         #endregion
