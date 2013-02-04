@@ -15,7 +15,7 @@
 #region
 
 using System;
-using SignalR;
+using Microsoft.AspNet.SignalR;
 
 #endregion
 

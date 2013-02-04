@@ -18,6 +18,7 @@ using System.Web;
 using System.Web.Http.Description;
 using System.Web.Http.Services;
 using NooSphere.Cloud.ActivityManager.Documentation;
+using System.Web.Http.Controllers;
 
 #endregion
 
@@ -25,7 +26,7 @@ namespace NooSphere.Cloud.ActivityManager.App_Start
 {
     public class DocumentationConfig
     {
-        public static void RegisterDocumentation(DefaultServices services)
+        public static void RegisterDocumentation(ServicesContainer services)
         {
             services.Replace(typeof (IDocumentationProvider),
                              new XmlCommentDocumentationProvider(

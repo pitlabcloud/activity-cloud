@@ -20,7 +20,7 @@ using System.Configuration;
 using System.Threading.Tasks;
 using NooSphere.Cloud.Data.Registry;
 using NooSphere.Core.ActivityModel;
-using SignalR;
+using Microsoft.AspNet.SignalR;
 
 #endregion
 
@@ -31,15 +31,15 @@ namespace NooSphere.Cloud.ActivityManager.Events
     public class EventDispatcher : PersistentConnection
     {
         private readonly DeviceRegistry DeviceRegistry =
-            new DeviceRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
-
+            new DeviceRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"], ConfigurationManager.AppSettings["MongoDb"]);
+        
         /// <summary>
         ///   Called when a new connection is made.
         /// </summary>
         /// <param name="request"> The request associated with this connection. </param>
         /// <param name="connectionId"> The id of the new connection. </param>
         /// <returns> </returns>
-        protected override Task OnConnectedAsync(IRequest request, string connectionId)
+        protected override Task OnConnected(IRequest request, string connectionId)
         {
             DeviceRegistry.Add(new Device {Id = Guid.NewGuid(), ConnectionId = new Guid(connectionId)});
             return Connection.Send("null", "Connected");
@@ -49,10 +49,9 @@ namespace NooSphere.Cloud.ActivityManager.Events
         ///   Called when a connection is restored.
         /// </summary>
         /// <param name="request"> The request associated with this connection. </param>
-        /// <param name="groups"> A list of groups the client is a part of. </param>
         /// <param name="connectionId"> The id of the new connection. </param>
         /// <returns> </returns>
-        protected override Task OnReconnectedAsync(IRequest request, IEnumerable<string> groups, string connectionId)
+        protected override Task OnReconnected(IRequest request, string connectionId)
         {
             return Connection.Send("null", "Reconnected");
         }
@@ -64,7 +63,7 @@ namespace NooSphere.Cloud.ActivityManager.Events
         /// <param name="connectionId"> The id of the connection that sent the data. </param>
         /// <param name="data"> The payload received from the client. </param>
         /// <returns> </returns>
-        protected override Task OnReceivedAsync(IRequest request, string connectionId, string data)
+        protected override Task OnReceived(IRequest request, string connectionId, string data)
         {
             return Connection.Broadcast(Notifier.ConstructEvent(NotificationType.Message, data));
         }
@@ -72,22 +71,13 @@ namespace NooSphere.Cloud.ActivityManager.Events
         /// <summary>
         ///   Called when a connection goes away (client is no longer connected, e.g. browser close).
         /// </summary>
+        /// <param name="request"> The request associated with the connection that sent the data. </param>
         /// <param name="connectionId"> The id of the client that disconnected. </param>
         /// <returns> </returns>
-        protected override Task OnDisconnectAsync(string connectionId)
+        protected override Task OnDisconnected(IRequest request, string connectionId)
         {
             DeviceRegistry.RemoveOnConnectionId(new Guid(connectionId));
             return Connection.Send("null", "Disconnected");
-        }
-
-        /// <summary>
-        ///   Called when an error occurs on the connection.
-        /// </summary>
-        /// <param name="error"> The error that occurred. </param>
-        /// <returns> </returns>
-        protected override Task OnErrorAsync(Exception error)
-        {
-            return Connection.Broadcast("Error ocurred " + error);
         }
     }
 }

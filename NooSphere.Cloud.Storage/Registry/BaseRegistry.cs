@@ -30,9 +30,11 @@ namespace NooSphere.Cloud.Data.Registry
 
         #region Constructors
 
-        public BaseRegistry(string connectionString)
+        public BaseRegistry(string connectionString, string db)
         {
-            database = MongoDatabase.Create(connectionString);
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            database = server.GetDatabase(db);
         }
 
         #endregion
@@ -51,20 +53,20 @@ namespace NooSphere.Cloud.Data.Registry
 
         protected bool Add(MongoCollection<object> collection, object obj)
         {
-            return collection.Insert(obj, SafeMode.True).Ok;
+            return collection.Insert(obj, WriteConcern.Acknowledged).Ok;
         }
 
         protected bool Upsert(MongoCollection<object> collection, object obj, Guid id)
         {
             if (collection.FindOneById(id) != null)
-                return collection.Update(Query.EQ("_id", id), Update.Replace(obj), SafeMode.True).Ok;
+                return collection.Update(Query.EQ("_id", id), Update.Replace(obj), WriteConcern.Acknowledged).Ok;
             else
                 return Add(collection, obj);
         }
 
         protected bool Remove(MongoCollection<object> collection, Guid id)
         {
-            return collection.Remove(Query.EQ("_id", id), SafeMode.True).Ok;
+            return collection.Remove(Query.EQ("_id", id), WriteConcern.Acknowledged).Ok;
         }
 
         #endregion

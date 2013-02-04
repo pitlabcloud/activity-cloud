@@ -30,7 +30,7 @@ namespace NooSphere.Cloud.ActivityManager.Authentication
     {
         public override void OnAuthorization(HttpActionContext actionContext)
         {
-            var deviceRegistry = new DeviceRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"]);
+            var deviceRegistry = new DeviceRegistry(ConfigurationManager.AppSettings["MONGOLAB_URI"], ConfigurationManager.AppSettings["MongoDb"]);
 
             Guid connectionId;
             try
